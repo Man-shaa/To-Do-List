@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
-using ToDo.Application.DTOs;
+using ToDo.Application.Todos.DTOs;
 using ToDo.Application.Todos.Commands.CreateTodo;
 using ToDo.Application.Todos.Commands.UpdateTodo;
 using ToDo.Application.Todos.Commands.DeleteTodo;

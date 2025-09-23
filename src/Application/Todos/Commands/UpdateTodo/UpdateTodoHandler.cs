@@ -7,15 +7,11 @@ namespace ToDo.Application.Todos.Commands.UpdateTodo;
 
 public record UpdateTodoCommand(int Id, JsonPatchDocument<Todo> PatchDocument) : IRequest<IResult>;
 
-public sealed class UpdateTodoHandler : IRequestHandler<UpdateTodoCommand, IResult>
+public sealed class UpdateTodoHandler(TodoService todoService) : IRequestHandler<UpdateTodoCommand, IResult>
 {
-    private readonly TodoService _todoService;
-
-    public UpdateTodoHandler(TodoService todoService) => _todoService = todoService;
-
     public Task<IResult> Handle(UpdateTodoCommand request, CancellationToken cancellationToken)
     {
-        var todo = _todoService.GetById(request.Id);
+        var todo = todoService.GetById(request.Id);
 
         if (todo is null)
             return Task.FromResult(Results.NotFound(new { error = $"Todo {request.Id} not found" }));
@@ -26,7 +22,7 @@ public sealed class UpdateTodoHandler : IRequestHandler<UpdateTodoCommand, IResu
 
         if (isValidOperation.Count > 0)
         {
-            return Task.FromResult<IResult>(Results.BadRequest(new
+            return Task.FromResult(Results.BadRequest(new
             {
                 error = $"Only 'replace' operations are allowed",
                 invalidOperations = isValidOperation.ToList()
