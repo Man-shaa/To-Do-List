@@ -7,6 +7,5 @@ public sealed class SettingsOptions
     public const string ConfigurationSectionName = "TodoSettings";
 
     [Required]
-    [Url]
-    public required string BaseUrl { get; set; }
+    public required System.Uri BaseUrl { get; set; }
 }
