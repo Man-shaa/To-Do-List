@@ -9,16 +9,25 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <!-- JSON and patch -->
         <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="9.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="9.0.0" />
-
-        <!-- FluentValidation: keep versions in sync -->
         <PackageReference Include="FluentValidation" Version="11.11.0" />
         <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
-
-        <!-- MediatR -->
         <PackageReference Include="MediatR" Version="13.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="Application\Application.csproj" />
+      <Content Include="Domain\Domain.csproj" />
+      <Content Include="Infrastructure\Infrastructure.csproj" />
+      <Content Include="Presentation\Presentation.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Domain\bin\Debug\net9.0\Domain.deps.json" />
+      <_ContentIncludedByDefault Remove="Infrastructure\obj\Infrastructure.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="Infrastructure\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="Infrastructure\obj\project.packagespec.json" />
     </ItemGroup>
 
 
