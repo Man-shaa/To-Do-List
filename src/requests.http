@@ -33,6 +33,11 @@ Content-Type: application/json
     "op": "replace",
     "path": "/order",
     "value": 4
+  },
+  {
+    "op": "replace",
+    "path": "/completed",
+    "value": true
   }
 ]
 
