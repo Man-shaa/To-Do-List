@@ -15,7 +15,8 @@ POST https://localhost:7214/todos
 Content-Type: application/json
 
 {
-  "title": "title"
+  "title": "title",
+  "order": 3
 }
 
 ### Patch a Todo

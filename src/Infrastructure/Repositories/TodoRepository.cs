@@ -8,8 +8,8 @@ namespace ToDo.Infrastructure.Repositories;
 public sealed class TodoService(IOptions<SettingsOptions> options)
 {
     private readonly List<Todo>	_todos = [];
-    private static int	s_todoId;
-    private readonly System.Uri	_baseUrl = options.Value.BaseUrl;
+    private static int      	s_todoId;
+    private readonly Uri	    _baseUrl = options.Value.BaseUrl;
 
     public IEnumerable<Todo> GetAll() =>
 		_todos;
@@ -22,7 +22,7 @@ public sealed class TodoService(IOptions<SettingsOptions> options)
         var todo = new Todo(
             id: s_todoId,
             title: dto.Title ?? "default title",
-            url: $"{_baseUrl}/todos/{s_todoId}",
+            url: new Uri($"{_baseUrl}/todos/{s_todoId}"),
             order: dto.Order ?? (s_todoId)
         );
 

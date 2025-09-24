@@ -17,14 +17,14 @@ public static class TodoEndpoints
 
         app.MapGet("/todos", (ISender sender) =>
             sender.Send(new GetAllTodoCommand()));
-
-        app.MapGet("/todos/{id}", (int id, ISender sender) =>
+        
+        app.MapGet("/todos/{id:int}", (int id, ISender sender) =>
             sender.Send(new GetTodoByIdCommand(id)));
 
         app.MapPost("/todos", async (TodoCreateDto dto, ISender sender) =>
             await sender.Send(new CreateTodoCommand(dto)));
 
-        app.MapPatch("/todos/{id}", async (int id, HttpRequest request, ISender sender) =>
+        app.MapPatch("/todos/{id:int}", async (int id, HttpRequest request, ISender sender) =>
         {
             using var reader = new StreamReader(request.Body);
             var body = await reader.ReadToEndAsync();
@@ -35,7 +35,7 @@ public static class TodoEndpoints
             return await sender.Send(new UpdateTodoCommand(id, patch!));
         });
 
-        app.MapDelete("/todos/{id}", (int id, ISender sender) =>
+        app.MapDelete("/todos/{id:int}", (int id, ISender sender) =>
             sender.Send(new DeleteTodoCommand(id)));
 
         app.MapDelete("/todos/", (ISender sender) =>
