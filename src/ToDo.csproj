@@ -28,6 +28,21 @@
       <_ContentIncludedByDefault Remove="Infrastructure\obj\Infrastructure.csproj.nuget.dgspec.json" />
       <_ContentIncludedByDefault Remove="Infrastructure\obj\project.assets.json" />
       <_ContentIncludedByDefault Remove="Infrastructure\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="Presentation\obj\Presentation.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="Presentation\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="Presentation\obj\project.packagespec.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Presentation\obj\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Presentation\obj\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Presentation\obj\**" />
     </ItemGroup>
 
 

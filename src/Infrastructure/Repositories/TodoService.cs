@@ -19,7 +19,6 @@ public sealed class TodoService(IOptions<SettingsOptions> options)
 
     public Todo	Create(TodoCreateDto dto)
     {
-        Console.WriteLine($"baserUrl :{_baseUrl}");
         var todo = new Todo(
             id: s_todoId,
             title: dto.Title ?? "default title",
