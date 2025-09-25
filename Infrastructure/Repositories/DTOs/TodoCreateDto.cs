@@ -1,4 +1,4 @@
-namespace ToDo.Application.Todos.DTOs;
+namespace Todo.Infrastructure.Repositories.DTOs;
 
 public sealed record TodoCreateDto
 {

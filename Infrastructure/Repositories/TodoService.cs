@@ -1,25 +1,22 @@
-using Microsoft.Extensions.Options;
-using ToDo.Presentation.Configurations;
-using ToDo.Domain.Entities;
-using ToDo.Application.Todos.DTOs;
+using Todo.Infrastructure.Repositories.DTOs;
 
-namespace ToDo.Infrastructure.Repositories;
+namespace Todo.Infrastructure.Repositories;
 
 public sealed class TodoService(IOptions<SettingsOptions> options)
 {
-    private readonly List<Todo>	_todos = [];
+    private readonly List<Domain.Entities.Todo>	_todos = [];
     private static int      	s_todoId;
     private readonly Uri	    _baseUrl = options.Value.BaseUrl;
 
-    public IEnumerable<Todo> GetAll() =>
+    public IEnumerable<Domain.Entities.Todo> GetAll() =>
 		_todos;
 
-    public Todo? GetById(int id) =>
+    public Domain.Entities.Todo? GetById(int id) =>
         _todos.FirstOrDefault(t => t.Id == id);
 
-    public Todo	Create(TodoCreateDto dto)
+    public Domain.Entities.Todo	Create(TodoCreateDto dto)
     {
-        var todo = new Todo(
+        var todo = new Domain.Entities.Todo(
             id: s_todoId,
             title: dto.Title ?? "default title",
             url: new Uri($"{_baseUrl}todos/{s_todoId}"),
@@ -32,7 +29,7 @@ public sealed class TodoService(IOptions<SettingsOptions> options)
         return todo;
     }
 
-    public void DeleteById(Todo todo)
+    public void DeleteById(Domain.Entities.Todo todo)
     {
         _todos.Remove(todo);
     }

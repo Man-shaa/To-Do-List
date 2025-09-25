@@ -1,8 +1,9 @@
 using MediatR;
-using ToDo.Application.Todos.DTOs;
-using ToDo.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Http;
+using Todo.Infrastructure.Repositories;
+using Todo.Infrastructure.Repositories.DTOs;
 
-namespace ToDo.Application.Todos.Commands.CreateTodo;
+namespace Todo.Application.Todos.Commands.CreateTodo;
 
 public record CreateTodoCommand(TodoCreateDto Todo) : IRequest<IResult>;
 

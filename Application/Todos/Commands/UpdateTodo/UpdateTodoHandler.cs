@@ -1,11 +1,11 @@
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
-using ToDo.Domain.Entities;
-using ToDo.Infrastructure.Repositories;
+using Todo.Infrastructure.Repositories;
 
-namespace ToDo.Application.Todos.Commands.UpdateTodo;
+namespace Todo.Application.Todos.Commands.UpdateTodo;
 
-public record UpdateTodoCommand(int Id, JsonPatchDocument<Todo> PatchDocument) : IRequest<IResult>;
+public record UpdateTodoCommand(int Id, JsonPatchDocument<Domain.Entities.Todo> PatchDocument) : IRequest<IResult>;
 
 public sealed class UpdateTodoHandler(TodoService todoService) : IRequestHandler<UpdateTodoCommand, IResult>
 {

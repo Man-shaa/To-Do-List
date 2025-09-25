@@ -1,13 +1,12 @@
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
-using ToDo.Application.Todos.DTOs;
-using ToDo.Application.Todos.Commands.CreateTodo;
-using ToDo.Application.Todos.Commands.UpdateTodo;
-using ToDo.Application.Todos.Commands.DeleteTodo;
-using ToDo.Application.Todos.Queries.GetTodo;
-using ToDo.Domain.Entities;
+using Todo.Application.Todos.Commands.CreateTodo;
+using Todo.Application.Todos.Commands.DeleteTodo;
+using Todo.Application.Todos.Commands.UpdateTodo;
+using Todo.Application.Todos.Queries.GetTodo;
+using Todo.Infrastructure.Repositories.DTOs;
 
-namespace ToDo.Presentation.Endpoints;
+namespace Todo.Presentation.Endpoints;
 
 public static class TodoEndpoints
 {
@@ -30,7 +29,7 @@ public static class TodoEndpoints
             var body = await reader.ReadToEndAsync();
 
             var patch = Newtonsoft.Json.JsonConvert
-                .DeserializeObject<JsonPatchDocument<Todo>>(body);
+                .DeserializeObject<JsonPatchDocument<Domain.Entities.Todo>>(body);
 
             return await sender.Send(new UpdateTodoCommand(id, patch!));
         });

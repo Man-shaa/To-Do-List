@@ -1,7 +1,8 @@
 using MediatR;
-using ToDo.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Http;
+using Todo.Infrastructure.Repositories;
 
-namespace ToDo.Application.Todos.Queries.GetTodo;
+namespace Todo.Application.Todos.Queries.GetTodo;
 
 public record GetTodoByIdCommand(int Id) : IRequest<IResult>;
 

@@ -1,8 +1,6 @@
-using Microsoft.Extensions.Options;
-using ToDo.Presentation.Configurations;
 using Xunit;
 
-namespace ToDo.Infrastructure.Repositories;
+namespace Todo.Infrastructure.Repositories;
 
 public class TodoServiceTests
 {

@@ -1,7 +1,8 @@
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
-namespace ToDo.Application.Common.Behaviors;
+namespace Todo.Application.Common.Behaviors;
 
 public sealed class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
     : IPipelineBehavior<TRequest, TResponse>

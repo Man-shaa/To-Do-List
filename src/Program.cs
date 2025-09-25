@@ -3,10 +3,11 @@ using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc.Formatters;
-using ToDo.Presentation.Configurations;
-using ToDo.Presentation.Endpoints;
-using ToDo.Application.Common.Behaviors;
-using ToDo.Infrastructure.Repositories;
+using Todo.Application.Common.Behaviors;
+using Todo.Infrastructure.Repositories;
+using Todo.Presentation.Configurations;
+using Todo.Presentation.Endpoints;
+using ValidateSettingsOptions = Todo.Presentation.Configurations.ValidateSettingsOptions;
 
 var builder = WebApplication.CreateBuilder(args);
 

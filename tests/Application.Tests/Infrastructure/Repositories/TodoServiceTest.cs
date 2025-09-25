@@ -1,6 +1,7 @@
 using System;
-using ToDo.Infrastructure.Repositories;
 using Microsoft.Extensions.Options;
+using Todo.Infrastructure.Repositories;
+using Todo.Presentation.Configurations;
 using ToDo.Presentation.Configurations;
 using Xunit;
 

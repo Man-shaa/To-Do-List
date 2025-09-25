@@ -1,4 +1,4 @@
-namespace ToDo.Domain.Entities;
+namespace Todo.Domain.Entities;
 public sealed class Todo(int id, string title, Uri url, int order)
 {
     public int		Id { get; } = id;

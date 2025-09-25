@@ -1,8 +1,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using ToDo.Infrastructure.Repositories;
+using Todo.Infrastructure.Repositories;
 
-namespace ToDo.Application.Todos.Commands.DeleteTodo;
+namespace Todo.Application.Todos.Commands.DeleteTodo;
 
 public record DeleteAllTodoCommand() : IRequest<IResult>;
 
