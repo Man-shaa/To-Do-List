@@ -6,6 +6,8 @@
         <RootNamespace>ToDo</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>Todo.Presentation</RootNamespace>
+        <AssemblyName>Todo.Presentation</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
@@ -14,13 +16,12 @@
         <PackageReference Include="FluentValidation" Version="11.11.0" />
         <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
         <PackageReference Include="MediatR" Version="13.0.0" />
+        <PackageReference Include="xunit" Version="2.9.3" />
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="Application\Application.csproj" />
-      <Content Include="Domain\Domain.csproj" />
-      <Content Include="Infrastructure\Infrastructure.csproj" />
-      <Content Include="Presentation\Presentation.csproj" />
+        <ProjectReference Include="..\Application\Application.csproj" />
+        <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -45,6 +46,9 @@
       <None Remove="Presentation\obj\**" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Infrastructure\" />
+    </ItemGroup>
 
 </Project>
  
