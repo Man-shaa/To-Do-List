@@ -23,7 +23,7 @@ public sealed class UpdateTodoHandler(TodoService todoService) : IRequestHandler
         if (isValidOperation.Count > 0)
         {
             return Task.FromResult(Results.BadRequest(
-                (error: $"Only 'replace' operations are allowed",
+                (error: "Only 'replace' operations are allowed",
                 invalidOperations: isValidOperation.ToList()
                 )));
         }
