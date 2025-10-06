@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Todo.Presentation.Configurations;
+namespace Todo.Infrastructure.Repositories.Configurations;
 
 public sealed class SettingsOptions
 {

@@ -1,8 +1,7 @@
 using System;
 using Microsoft.Extensions.Options;
 using Todo.Infrastructure.Repositories;
-using Todo.Presentation.Configurations;
-using ToDo.Presentation.Configurations;
+using Todo.Infrastructure.Repositories.Configurations;
 using Xunit;
 
 namespace Application.Tests.Infrastructure.Repositories;
