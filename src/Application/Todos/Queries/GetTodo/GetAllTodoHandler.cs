@@ -1,21 +1,18 @@
+using Domain.Entities;
+using Infrastructure.Repositories;
 using MediatR;
-using ToDo.Domain.Entities;
-using ToDo.Infrastructure.Repositories;
 
-namespace ToDo.Application.Todos.Queries.GetTodo;
+namespace Application.Todos.Queries.GetTodo;
 
-public record GetAllTodoCommand() : IRequest<IResult>;
+public record GetAllTodoQuery : IRequest<List<Todo>>;
 
-public sealed class GetAllTodoHandler(TodoService todoService) : IRequestHandler<GetAllTodoCommand, IResult>
+public sealed class GetAllTodoHandler(ITodoService todoService)
+    : IRequestHandler<GetAllTodoQuery, List<Todo>>
 {
-    public Task<IResult> Handle(GetAllTodoCommand request, CancellationToken cancellationToken)
+    public async Task<List<Todo>> Handle(GetAllTodoQuery request, CancellationToken cancellationToken)
     {
-        var todos = todoService.GetAll();
+        var todos = await todoService.GetAllAsync(cancellationToken);
 
-        IEnumerable<Todo> enumerable = todos.ToList();
-        if (enumerable.ToArray().Length == 0)
-            return Task.FromResult(Results.NoContent());
-
-        return Task.FromResult(Results.Ok(enumerable));
+        return await Task.FromResult(todos);
     }
 }

@@ -1,16 +1,15 @@
+using Infrastructure.Repositories;
 using MediatR;
-using ToDo.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Http;
 
-namespace ToDo.Application.Todos.Commands.DeleteTodo;
+namespace Application.Todos.Commands.DeleteTodo;
 
-public record DeleteAllTodoCommand() : IRequest<IResult>;
+public record DeleteAllTodoCommand : IRequest;
 
-public sealed class DeleteAllTodoHandler(TodoService todoService) : IRequestHandler<DeleteAllTodoCommand, IResult>
+public sealed class DeleteAllTodoHandler(ITodoService todoService) : IRequestHandler<DeleteAllTodoCommand>
 {
-    public Task<IResult> Handle(DeleteAllTodoCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteAllTodoCommand request, CancellationToken cancellationToken)
     {
-        todoService.DeleteAll();
-
-        return Task.FromResult(Results.NoContent());
+        await todoService.DeleteAllAsync(cancellationToken);
     }
 }

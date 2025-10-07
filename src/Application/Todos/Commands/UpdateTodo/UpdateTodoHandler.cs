@@ -1,43 +1,44 @@
+using Domain.Entities;
+using Infrastructure.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
-using ToDo.Domain.Entities;
-using ToDo.Infrastructure.Repositories;
+using Microsoft.AspNetCore.JsonPatch.Operations;
 
-namespace ToDo.Application.Todos.Commands.UpdateTodo;
+namespace Application.Todos.Commands.UpdateTodo;
 
-public record UpdateTodoCommand(int Id, JsonPatchDocument<Todo> PatchDocument) : IRequest<IResult>;
+public record UpdateTodoCommand(int Id, JsonPatchDocument<Todo> PatchDocument) : IRequest<Response>;
 
-public sealed class UpdateTodoHandler(TodoService todoService) : IRequestHandler<UpdateTodoCommand, IResult>
+public record Response(Todo? Todo, List<string>? Errors);
+
+public sealed class UpdateTodoHandler(ITodoService todoService) : IRequestHandler<UpdateTodoCommand, Response>
 {
-    public Task<IResult> Handle(UpdateTodoCommand request, CancellationToken cancellationToken)
+    public async Task<Response> Handle(UpdateTodoCommand request, CancellationToken cancellationToken)
     {
-        var todo = todoService.GetById(request.Id);
+        var todo = await todoService.GetByIdAsync(request.Id, cancellationToken);
 
         if (todo is null)
-            return Task.FromResult(Results.NotFound(new { error = $"Todo {request.Id} not found" }));
+            return new Response(null, null);
 
-        var isValidOperation = request.PatchDocument.Operations
-            .Where(op => !string.Equals(op.op, "replace", StringComparison.OrdinalIgnoreCase))
+        var invalidOperations = request.PatchDocument.Operations
+            .Where(op => op.OperationType != OperationType.Replace)
             .ToList();
 
-        if (isValidOperation.Count > 0)
+        if (invalidOperations.Count > 0)
         {
-            return Task.FromResult(Results.BadRequest(new
-            {
-                error = $"Only 'replace' operations are allowed",
-                invalidOperations = isValidOperation.ToList()
-            }));
+            var errors = invalidOperations
+                .Select(op => $"Operation '{op.op}' on path '{op.path}' is not allowed. Only 'replace' is permitted.")
+                .ToList();
+
+            return new Response(todo, errors);
         }
 
-        var errors = new List<string>();
+        var applyPatchErrors = new List<string>();
 
-        request.PatchDocument.ApplyTo(todo, error =>
-            errors.Add(error.ErrorMessage)
-        );
+        request.PatchDocument.ApplyTo(todo, error => applyPatchErrors.Add(error.ErrorMessage));
 
-        if (errors.Count > 0)
-            return Task.FromResult(Results.BadRequest(new { errors }));
+        if (applyPatchErrors.Count > 0)
+            return new Response(todo, applyPatchErrors);
 
-        return Task.FromResult(Results.Ok(todo));
+        return new Response(todo, new List<string>());
     }
 }

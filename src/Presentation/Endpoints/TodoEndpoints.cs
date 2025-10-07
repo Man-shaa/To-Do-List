@@ -1,13 +1,13 @@
+using Application.Todos.Commands.CreateTodo;
+using Application.Todos.Commands.DeleteTodo;
+using Application.Todos.Commands.UpdateTodo;
+using Application.Todos.Queries.GetTodo;
+using Domain.Entities;
+using Infrastructure.Repositories.DTOs;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
-using ToDo.Application.Todos.DTOs;
-using ToDo.Application.Todos.Commands.CreateTodo;
-using ToDo.Application.Todos.Commands.UpdateTodo;
-using ToDo.Application.Todos.Commands.DeleteTodo;
-using ToDo.Application.Todos.Queries.GetTodo;
-using ToDo.Domain.Entities;
 
-namespace ToDo.Presentation.Endpoints;
+namespace Presentation.Endpoints;
 
 public static class TodoEndpoints
 {
@@ -15,30 +15,53 @@ public static class TodoEndpoints
     {
         app.MapGet("/", () => "Hello World");
 
-        app.MapGet("/todos", (ISender sender) =>
-            sender.Send(new GetAllTodoCommand()));
+        app.MapGet("/todos", GetAllTodoAsync);
 
-        app.MapGet("/todos/{id}", (int id, ISender sender) =>
-            sender.Send(new GetTodoByIdCommand(id)));
+        app.MapGet("/todos/{id:int}", GetTodoByIdAsync);
 
-        app.MapPost("/todos", async (TodoCreateDto dto, ISender sender) =>
-            await sender.Send(new CreateTodoCommand(dto)));
+        app.MapPost("/todos", CreateTodoAsync);
 
-        app.MapPatch("/todos/{id}", async (int id, HttpRequest request, ISender sender) =>
-        {
-            using var reader = new StreamReader(request.Body);
-            var body = await reader.ReadToEndAsync();
+        app.MapPatch("/todos/{id:int}", UpdateTodoByIdAsync);
 
-            var patch = Newtonsoft.Json.JsonConvert
-                .DeserializeObject<JsonPatchDocument<Todo>>(body);
+        app.MapDelete("/todos/", DeleteAllTodoAsync);
 
-            return await sender.Send(new UpdateTodoCommand(id, patch!));
-        });
-
-        app.MapDelete("/todos/{id}", (int id, ISender sender) =>
-            sender.Send(new DeleteTodoCommand(id)));
-
-        app.MapDelete("/todos/", (ISender sender) =>
-            sender.Send(new DeleteAllTodoCommand()));
+        app.MapDelete("/todos/{id:int}", DeleteTodoByIdAsync);
     }
+
+    private static async Task<List<Todo>> GetAllTodoAsync(ISender sender) =>
+        await sender.Send(new GetAllTodoQuery());
+
+    private static async Task<IResult> GetTodoByIdAsync(int id, ISender sender)
+    {
+        var todo = await sender.Send(new GetTodoByIdCommand(id));
+
+        if (todo is null)
+            return Results.NotFound();
+        return Results.Ok(todo);
+    }
+
+    private static async Task<Todo> CreateTodoAsync(TodoCreateDto dto, ISender sender) =>
+        await sender.Send(new CreateTodoCommand(dto));
+
+    private static async Task<IResult> UpdateTodoByIdAsync(int id, HttpRequest request, ISender sender)
+    {
+        using var reader = new StreamReader(request.Body);
+        var body = await reader.ReadToEndAsync();
+
+        var patch = Newtonsoft.Json.JsonConvert.DeserializeObject<JsonPatchDocument<Todo>>(body);
+
+        var response = await sender.Send(new UpdateTodoCommand(id, patch!));
+
+        if (response.Todo is null)
+            return Results.NotFound();
+        if (response.Errors is not null && response.Errors.Count > 0)
+            return Results.BadRequest(response.Errors);
+        return Results.Ok(response.Todo);
+    }
+
+    private static Task DeleteAllTodoAsync(ISender sender) =>
+        sender.Send(new DeleteAllTodoCommand());
+
+    private static Task DeleteTodoByIdAsync(int id, ISender sender) =>
+        sender.Send(new DeleteTodoCommand(id));
 }

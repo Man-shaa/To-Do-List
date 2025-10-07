@@ -1,7 +1,8 @@
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
-namespace ToDo.Application.Common.Behaviors;
+namespace Application.Common.Behaviors;
 
 public sealed class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
     : IPipelineBehavior<TRequest, TResponse>
@@ -16,18 +17,16 @@ public sealed class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidat
             .SelectMany(r => r.Errors)
             .ToList();
 
-        if (failures.Any())
-        {
-            var errors = failures
-                .GroupBy(f => f.PropertyName)
-                .ToDictionary(
-                    g => g.Key,
-                    g => g.Select(x => x.ErrorMessage).ToArray()
-                );
+        if (failures.Count == 0)
+            return await next(cancellationToken);
 
-            return (TResponse)Results.ValidationProblem(errors);
-        }
+        var errors = failures
+            .GroupBy(f => f.PropertyName)
+            .ToDictionary(
+                g => g.Key,
+                g => g.Select(x => x.ErrorMessage).ToArray()
+            );
 
-        return await next();
+        return (TResponse)Results.ValidationProblem(errors);
     }
 }

@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace ToDo.Application.Todos.Commands.CreateTodo;
+namespace Application.Todos.Commands.CreateTodo;
 
 public sealed class CreateTodoCommandValidator : AbstractValidator<CreateTodoCommand>
 {

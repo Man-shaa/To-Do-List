@@ -1,18 +1,14 @@
+using Domain.Entities;
+using Infrastructure.Repositories;
 using MediatR;
-using ToDo.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Http;
 
-namespace ToDo.Application.Todos.Queries.GetTodo;
+namespace Application.Todos.Queries.GetTodo;
 
-public record GetTodoByIdCommand(int Id) : IRequest<IResult>;
+public record GetTodoByIdCommand(int Id) : IRequest<Todo?>;
 
-public sealed class GetTodoByIdHandler(TodoService todoService) : IRequestHandler<GetTodoByIdCommand, IResult>
+public sealed class GetTodoByIdHandler(ITodoService todoService) : IRequestHandler<GetTodoByIdCommand, Todo?>
 {
-    public Task<IResult> Handle(GetTodoByIdCommand request, CancellationToken cancellationToken)
-    {
-        var todo = todoService.GetById(request.Id);
-        if (todo is null)
-            return Task.FromResult(Results.NotFound(new { error = $"Todo {request.Id} not found" }));
-
-        return Task.FromResult(Results.Ok(todo));
-    }
+    public async Task<Todo?> Handle(GetTodoByIdCommand request, CancellationToken cancellationToken) => 
+        await todoService.GetByIdAsync(request.Id, cancellationToken);
 }
