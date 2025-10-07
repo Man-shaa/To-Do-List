@@ -36,7 +36,7 @@ public sealed class TodoService(IOptions<SettingsOptions> options) : ITodoServic
         _todos.Add(todo);
         return await Task.FromResult(todo);
     }
-
+    
     public async Task DeleteByIdAsync(Todo? todo, CancellationToken ct)
     {
       if (todo is not null)
@@ -49,7 +49,7 @@ public sealed class TodoService(IOptions<SettingsOptions> options) : ITodoServic
         _todos.Clear();
         await Task.CompletedTask;
     }
-    
+
     // unit test purpose only
     public string UselessMethod(string a)
     {
