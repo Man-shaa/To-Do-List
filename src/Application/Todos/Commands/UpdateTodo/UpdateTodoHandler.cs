@@ -19,26 +19,20 @@ public sealed class UpdateTodoHandler(ITodoService todoService) : IRequestHandle
         if (todo is null)
             return new Response(null, null);
 
-        var invalidOperations = request.PatchDocument.Operations
+        var errors = request.PatchDocument.Operations
             .Where(op => op.OperationType != OperationType.Replace)
+            .Select(op => $"Operation '{op.op}' on path '{op.path}' is not allowed. Only 'replace' is permitted.")
             .ToList();
 
-        if (invalidOperations.Count > 0)
-        {
-            var errors = invalidOperations
-                .Select(op => $"Operation '{op.op}' on path '{op.path}' is not allowed. Only 'replace' is permitted.")
-                .ToList();
-
+        if (errors.Count > 0)
             return new Response(todo, errors);
-        }
 
         var applyPatchErrors = new List<string>();
-
         request.PatchDocument.ApplyTo(todo, error => applyPatchErrors.Add(error.ErrorMessage));
 
         if (applyPatchErrors.Count > 0)
             return new Response(todo, applyPatchErrors);
 
-        return new Response(todo, new List<string>());
+        return new Response(todo, null);
     }
 }
