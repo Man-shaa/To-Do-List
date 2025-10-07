@@ -1,12 +1,10 @@
 using System;
 using Microsoft.Extensions.Options;
-using Todo.Infrastructure.Repositories;
-using Todo.Infrastructure.Repositories.Configurations;
+using Infrastructure.Repositories;
+using Infrastructure.Repositories.Configurations;
 using Xunit;
 
 namespace Application.Tests.Infrastructure.Repositories;
-
-
 
 public class TodoServiceTests
 {
