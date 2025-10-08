@@ -16,7 +16,7 @@ public static class DependencyInjection
             .ValidateOnStart();
 
         services.AddSingleton<IValidateOptions<SettingsOptions>, ValidateSettingsOptions>();
-        
+
         return services;
     }
 }
