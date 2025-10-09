@@ -6,12 +6,8 @@ using Presentation.Endpoints;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddPresentation()
-    .AddInfrastructure();
-
-builder.AddApplication();
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+    .AddInfrastructure()
+    .AddApplication();
 
 var app = builder.Build();
 

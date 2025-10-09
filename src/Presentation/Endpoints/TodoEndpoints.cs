@@ -15,20 +15,23 @@ public static class TodoEndpoints
     {
         app.MapGet("/", () => "Hello World");
 
-        app.MapGet("/todos", GetAllTodoAsync)
-            .Produces<Todo>(StatusCodes.Status200OK);
+        app.MapGet("/todos", GetAllTodoAsync);
 
         app.MapGet("/todos/{id:int}", GetTodoByIdAsync)
-            .Produces<Todo>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound);
 
-        app.MapPost("/todos", CreateTodoAsync);
+        app.MapPost("/todos", CreateTodoAsync)
+            .Produces<Todo>(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status400BadRequest);
 
         app.MapPatch("/todos/{id:int}", UpdateTodoByIdAsync);
 
-        app.MapDelete("/todos/", DeleteAllTodoAsync);
+        app.MapDelete("/todos/", DeleteAllTodoAsync)
+            .Produces(StatusCodes.Status200OK);
 
-        app.MapDelete("/todos/{id:int}", DeleteTodoByIdAsync);
+        app.MapDelete("/todos/{id:int}", DeleteTodoByIdAsync)
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound);
     }
 
     private static async Task<List<Todo>> GetAllTodoAsync(ISender sender) =>
@@ -62,9 +65,15 @@ public static class TodoEndpoints
         return Results.Ok(response.Todo);
     }
 
-    private static Task DeleteAllTodoAsync(ISender sender) =>
-        sender.Send(new DeleteAllTodoCommand());
+    private static async Task DeleteAllTodoAsync(ISender sender) =>
+        await sender.Send(new DeleteAllTodoCommand());
 
-    private static Task DeleteTodoByIdAsync(int id, ISender sender) =>
-        sender.Send(new DeleteTodoCommand(id));
+    private static async Task<IResult> DeleteTodoByIdAsync(int id, ISender sender)
+    {
+        var hasBeenDeleted = await sender.Send(new DeleteTodoCommand(id));
+
+        if (hasBeenDeleted)
+            return Results.Empty;
+        return Results.NotFound();
+    }
 }

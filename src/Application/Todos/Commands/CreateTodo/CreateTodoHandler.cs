@@ -13,6 +13,7 @@ public sealed class CreateTodoHandler(ITodoService todoService) : IRequestHandle
     public async Task<IResult> Handle(CreateTodoCommand request, CancellationToken cancellationToken)
     {
         var todo = await todoService.CreateAsync(request.Todo, cancellationToken);
-        return Results.Ok(todo);
+
+        return Results.Created(todo.Url, todo);
     }
 }
