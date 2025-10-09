@@ -15,9 +15,12 @@ public static class TodoEndpoints
     {
         app.MapGet("/", () => "Hello World");
 
-        app.MapGet("/todos", GetAllTodoAsync);
+        app.MapGet("/todos", GetAllTodoAsync)
+            .Produces<Todo>(StatusCodes.Status200OK);
 
-        app.MapGet("/todos/{id:int}", GetTodoByIdAsync);
+        app.MapGet("/todos/{id:int}", GetTodoByIdAsync)
+            .Produces<Todo>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound);
 
         app.MapPost("/todos", CreateTodoAsync);
 
@@ -40,7 +43,7 @@ public static class TodoEndpoints
         return Results.Ok(todo);
     }
 
-    private static async Task<Todo> CreateTodoAsync(TodoCreateDto dto, ISender sender) =>
+    private static async Task<IResult> CreateTodoAsync(TodoCreateDto dto, ISender sender) =>
         await sender.Send(new CreateTodoCommand(dto));
 
     private static async Task<IResult> UpdateTodoByIdAsync(int id, HttpRequest request, ISender sender)

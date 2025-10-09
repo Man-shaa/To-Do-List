@@ -6,11 +6,11 @@ namespace Presentation;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddPresentation(this IServiceCollection services)
+    public static IHostApplicationBuilder AddPresentation(this IHostApplicationBuilder builder)
     {
-        services.AddSingleton<TodoService>();
+        builder.Services.AddSingleton<TodoService>();
 
-        services.AddControllers(options =>
+        builder.Services.AddControllers(options =>
             {
                 options.InputFormatters.RemoveType<SystemTextJsonInputFormatter>();
             })
@@ -19,6 +19,7 @@ public static class DependencyInjection
                 opts.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             });
 
-        return services;
+        builder.Services.AddOpenApi();
+        return builder;
     }
 }

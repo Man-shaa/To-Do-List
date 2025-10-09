@@ -2,21 +2,22 @@ using Infrastructure.Repositories;
 using Infrastructure.Repositories.Configurations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Hosting;
 
 namespace Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+    public static IHostApplicationBuilder AddInfrastructure(this IHostApplicationBuilder builder)
     {
-        services.AddSingleton<ITodoService, TodoService>();
-        services.AddOptions<SettingsOptions>()
+        builder.Services.AddSingleton<ITodoService, TodoService>();
+        builder.Services.AddOptions<SettingsOptions>()
             .BindConfiguration(SettingsOptions.ConfigurationSectionName)
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
-        services.AddSingleton<IValidateOptions<SettingsOptions>, ValidateSettingsOptions>();
+        builder.Services.AddSingleton<IValidateOptions<SettingsOptions>, ValidateSettingsOptions>();
 
-        return services;
+        return builder;
     }
 }
