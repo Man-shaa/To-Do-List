@@ -20,6 +20,10 @@ public static class DependencyInjection
             });
 
         builder.Services.AddOpenApi();
+        
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+
         return builder;
     }
 }

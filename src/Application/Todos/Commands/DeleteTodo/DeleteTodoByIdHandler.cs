@@ -1,16 +1,18 @@
 using Infrastructure.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Todos.Commands.DeleteTodo;
 
-public record DeleteTodoCommand(int Id) : IRequest;
+public record DeleteTodoCommand(int Id) : IRequest<bool>;
 
-public sealed class DeleteTodoByIdHandler(ITodoService todoService) : IRequestHandler<DeleteTodoCommand>
+public sealed class DeleteTodoByIdHandler(ITodoService todoService) : IRequestHandler<DeleteTodoCommand, bool>
 {
-    public async Task Handle(DeleteTodoCommand request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(DeleteTodoCommand request, CancellationToken cancellationToken)
     {
         var todo = await todoService.GetByIdAsync(request.Id, cancellationToken);
 
-        await todoService.DeleteByIdAsync(todo, cancellationToken);
+        return await todoService.DeleteByIdAsync(todo, cancellationToken);
+        
     }
 }
