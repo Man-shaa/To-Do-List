@@ -1,4 +1,3 @@
-using Domain.Entities;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.DTOs;
 using MediatR;
