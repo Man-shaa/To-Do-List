@@ -1,6 +1,5 @@
 using Infrastructure.Repositories;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 
 namespace Application.Todos.Commands.DeleteTodo;
 
