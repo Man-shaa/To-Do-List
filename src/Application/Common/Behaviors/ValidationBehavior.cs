@@ -29,16 +29,14 @@ public sealed class ValidationBehavior<TRequest, TResponse>(
         if (failures.Count == 0)
             return await next(cancellationToken);
 
-        if (typeof(IResult).IsAssignableFrom(typeof(TResponse)))
-        {
-            var errors = failures
-                .GroupBy(e => e.PropertyName)
-                .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray());
+        if (!typeof(IResult).IsAssignableFrom(typeof(TResponse)))
+            throw new ValidationException(failures);
 
-            var problem = Results.ValidationProblem(errors);
-            return (TResponse)problem;
-        }
+        var errors = failures
+            .GroupBy(e => e.PropertyName)
+            .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray());
 
-        throw new ValidationException(failures);
+        var problem = Results.ValidationProblem(errors);
+        return (TResponse)problem;
     }
 }

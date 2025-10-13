@@ -2,7 +2,7 @@ using Application.Todos.Commands.CreateTodo;
 using FluentValidation.TestHelper;
 using Infrastructure.Repositories.DTOs;
 
-namespace UnitTests.Application.Todos;
+namespace UnitTests.Application.Todos.Commands.CreateTodo;
 
 public sealed class CreateTodoCommandValidatorTests
 {
