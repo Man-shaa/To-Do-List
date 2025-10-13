@@ -6,6 +6,7 @@ using Domain.Entities;
 using Infrastructure.Repositories.DTOs;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
+using Newtonsoft.Json;
 
 namespace Presentation.Endpoints;
 
@@ -46,23 +47,26 @@ public static class TodoEndpoints
         return Results.Ok(todo);
     }
 
-    private static async Task<IResult> CreateTodoAsync(TodoCreateDto dto, ISender sender) =>
-        await sender.Send(new CreateTodoCommand(dto));
+    private static async Task<IResult> CreateTodoAsync(TodoCreateDto dto, ISender sender)
+    {
+        var todo = await sender.Send(new CreateTodoCommand(dto));
+
+        return Results.Ok(todo);
+    }
 
     private static async Task<IResult> UpdateTodoByIdAsync(int id, HttpRequest request, ISender sender)
     {
         using var reader = new StreamReader(request.Body);
         var body = await reader.ReadToEndAsync();
+        var patch = JsonConvert.DeserializeObject<JsonPatchDocument<Todo>>(body);
+        var todo = await sender.Send(new GetTodoByIdCommand(id));
 
-        var patch = Newtonsoft.Json.JsonConvert.DeserializeObject<JsonPatchDocument<Todo>>(body);
+        if (todo is null)
+            return Results.NotFound($"Todo `{id}` not found");
 
-        var response = await sender.Send(new UpdateTodoCommand(id, patch!));
+        var updatedTodo = await sender.Send(new UpdateTodoCommand(todo, patch!));
 
-        if (response.Todo is null)
-            return Results.NotFound();
-        if (response.Errors is not null && response.Errors.Count > 0)
-            return Results.BadRequest(response.Errors);
-        return Results.Ok(response.Todo);
+        return Results.Ok(updatedTodo);
     }
 
     private static async Task DeleteAllTodoAsync(ISender sender) =>
