@@ -40,7 +40,7 @@ public static class TodoEndpoints
 
     private static async Task<IResult> GetTodoByIdAsync(int id, ISender sender)
     {
-        var todo = await sender.Send(new GetTodoByIdCommand(id));
+        var todo = await sender.Send(new GetTodoByIdQuery(id));
 
         if (todo is null)
             return Results.NotFound();
@@ -59,7 +59,7 @@ public static class TodoEndpoints
         using var reader = new StreamReader(request.Body);
         var body = await reader.ReadToEndAsync();
         var patch = JsonConvert.DeserializeObject<JsonPatchDocument<Todo>>(body);
-        var todo = await sender.Send(new GetTodoByIdCommand(id));
+        var todo = await sender.Send(new GetTodoByIdQuery(id));
 
         if (todo is null)
             return Results.NotFound($"Todo `{id}` not found");

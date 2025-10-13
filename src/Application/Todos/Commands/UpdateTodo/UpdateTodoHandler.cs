@@ -1,5 +1,4 @@
 using Domain.Entities;
-using Infrastructure.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 

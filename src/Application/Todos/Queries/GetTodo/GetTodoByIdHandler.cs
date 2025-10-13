@@ -4,10 +4,10 @@ using MediatR;
 
 namespace Application.Todos.Queries.GetTodo;
 
-public record GetTodoByIdCommand(int Id) : IRequest<Todo?>;
+public record GetTodoByIdQuery(int Id) : IRequest<Todo?>;
 
-public sealed class GetTodoByIdHandler(ITodoService todoService) : IRequestHandler<GetTodoByIdCommand, Todo?>
+public sealed class GetTodoByIdHandler(ITodoService todoService) : IRequestHandler<GetTodoByIdQuery, Todo?>
 {
-    public async Task<Todo?> Handle(GetTodoByIdCommand request, CancellationToken cancellationToken) => 
+    public async Task<Todo?> Handle(GetTodoByIdQuery request, CancellationToken cancellationToken) => 
         await todoService.GetByIdAsync(request.Id, cancellationToken);
 }
