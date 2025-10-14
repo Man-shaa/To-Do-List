@@ -2,7 +2,6 @@ using Application.Todos.Commands.CreateTodo;
 using Domain.Entities;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.DTOs;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 
 namespace  UnitTests.Application.Todos.Commands.CreateTodo;

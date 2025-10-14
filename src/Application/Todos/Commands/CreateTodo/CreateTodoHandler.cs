@@ -2,7 +2,6 @@ using Domain.Entities;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.DTOs;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 
 namespace Application.Todos.Commands.CreateTodo;
 
