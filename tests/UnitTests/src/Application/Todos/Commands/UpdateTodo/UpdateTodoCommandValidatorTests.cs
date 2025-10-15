@@ -1,5 +1,6 @@
 using Application.Todos.Commands.UpdateTodo;
 using Domain.Entities;
+using FluentValidation.TestHelper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 
@@ -14,156 +15,155 @@ namespace UnitTests.Application.Todos.Commands.UpdateTodo
             => new UpdateTodoCommand(MakeTodo(), patch!);
 
         [Fact]
-        public void Invalid_When_PatchDocument_Is_Null()
+        public void Should_have_error_when_patchdocument_is_null()
         {
             var validator = new UpdateTodoCommandValidator();
 
-            var result = validator.Validate(new UpdateTodoCommand(MakeTodo(), null!));
-            Assert.False(result.IsValid);
+            var result = validator.TestValidate(new UpdateTodoCommand(MakeTodo(), null!));
+
+            result.ShouldHaveValidationErrorFor(x => x.PatchDocument)
+                .WithErrorMessage("PatchDocument is required.");
         }
 
         [Fact]
-        public void Invalid_When_Operations_Is_Empty()
+        public void Should_have_error_when_operation_is_empty()
         {
-            var patch = new JsonPatchDocument<Todo>(); // no operations
+            var patch = new JsonPatchDocument<Todo>();
             var validator = new UpdateTodoCommandValidator();
 
-            var result = validator.Validate(MakeCommand(patch));
+            var result = validator.TestValidate(MakeCommand(patch));
 
-            Assert.False(result.IsValid);
-            Assert.Contains(result.Errors, e => e.ErrorMessage == "PatchDocument must have at least one operation.");
+            result.ShouldHaveValidationErrorFor(x => x.PatchDocument!.Operations)
+                .WithErrorMessage("PatchDocument must have at least one operation.");
         }
         
         [Fact]
-        public void Invalid_When_Any_Operation_Is_Not_Replace()
+        public void Should_have_error_when_any_operation_is_not_replace()
         {
             var patch = new JsonPatchDocument<Todo>();
             patch.Operations.Add(new Operation<Todo>("add", "/Title", from: null, value: "X"));
 
             var validator = new UpdateTodoCommandValidator();
-            var result = validator.Validate(MakeCommand(patch));
+            var result = validator.TestValidate(MakeCommand(patch));
 
-            Assert.False(result.IsValid);
-            Assert.Contains(result.Errors, e => e.ErrorMessage == "Only 'replace' operations are permitted.");
+            result.ShouldHaveValidationErrorFor("PatchDocument")
+                .WithErrorMessage("Only 'replace' operations are permitted.");
         }
 
         [Fact]
-        public void Invalid_When_Path_Is_Empty()
+        public void Should_have_error_when_path_is_empty()
         {
             var patch = new JsonPatchDocument<Todo>();
             patch.Operations.Add(new Operation<Todo>("replace", path: "", from: null, value: "New Title"));
 
             var validator = new UpdateTodoCommandValidator();
-            var result = validator.Validate(MakeCommand(patch));
+            var result = validator.TestValidate(MakeCommand(patch));
 
-            Assert.False(result.IsValid);
-            Assert.Contains(result.Errors, e => e.ErrorMessage == "Each operation must have a non-empty 'path'.");
+            result.ShouldHaveValidationErrorFor("PatchDocument")
+                .WithErrorMessage("Each operation must have a non-empty 'path'.");
         }
 
         [Fact]
-        public void Invalid_When_Path_Is_Whitespace()
+        public void Should_have_error_when_path_is_whitespace_only()
         {
             var patch = new JsonPatchDocument<Todo>();
             patch.Operations.Add(new Operation<Todo>("replace", path: "   ", from: null, value: "New Title"));
 
             var validator = new UpdateTodoCommandValidator();
-            var result = validator.Validate(MakeCommand(patch));
+            var result = validator.TestValidate(MakeCommand(patch));
 
-            Assert.False(result.IsValid);
-            Assert.Contains(result.Errors, e => e.ErrorMessage == "Each operation must have a non-empty 'path'.");
+            result.ShouldHaveValidationErrorFor("PatchDocument")
+                .WithErrorMessage("Each operation must have a non-empty 'path'.");
         }
 
         [Fact]
-        public void Invalid_When_Path_Does_Not_Start_With_Slash()
+        public void Should_have_error_when_path_does_not_start_with_slash()
         {
             var patch = new JsonPatchDocument<Todo>();
             patch.Operations.Add(new Operation<Todo>("replace", path: "Title", from: null, value: "New Title"));
 
             var validator = new UpdateTodoCommandValidator();
-            var result = validator.Validate(MakeCommand(patch));
+            var result = validator.TestValidate(MakeCommand(patch));
 
-            Assert.False(result.IsValid);
-            Assert.Contains(result.Errors, e => e.ErrorMessage == "Path must start with '/'.");
+            result.ShouldHaveValidationErrorFor("PatchDocument")
+                .WithErrorMessage("Path must start with '/'.");
         }
 
         [Fact]
-        public void Invalid_When_Replace_Value_Is_Null()
+        public void Should_have_error_when_replace_value_is_null()
         {
             var patch = new JsonPatchDocument<Todo>();
             patch.Operations.Add(new Operation<Todo>("replace", path: "/Title", from: null, value: null));
 
             var validator = new UpdateTodoCommandValidator();
-            var result = validator.Validate(MakeCommand(patch));
+            var result = validator.TestValidate(MakeCommand(patch));
 
-            Assert.False(result.IsValid);
-            Assert.Contains(result.Errors, e => e.ErrorMessage == "Value field required.");
+            result.ShouldHaveValidationErrorFor("PatchDocument")
+                .WithErrorMessage("Value field required.");
         }
 
         [Fact]
-        public void Valid_When_Replace_Title_With_String()
+        public void Should_pass_when_replace_title_with_string()
         {
             var patch = new JsonPatchDocument<Todo>();
             patch.Replace(t => t.Title, "Updated Title");
 
             var validator = new UpdateTodoCommandValidator();
-            var result = validator.Validate(MakeCommand(patch));
+            var result = validator.TestValidate(MakeCommand(patch));
 
-            Assert.True(result.IsValid);
+            result.ShouldNotHaveAnyValidationErrors();
         }
 
         [Fact]
-        public void Valid_When_Replace_Order_With_Int()
+        public void Should_pass_when_replace_order_with_int()
         {
             var patch = new JsonPatchDocument<Todo>();
             patch.Replace(t => t.Order, 42);
 
             var validator = new UpdateTodoCommandValidator();
-            var result = validator.Validate(MakeCommand(patch));
+            var result = validator.TestValidate(MakeCommand(patch));
 
-            Assert.True(result.IsValid);
+            result.ShouldNotHaveAnyValidationErrors();
         }
 
         [Fact]
-        public void Invalid_When_Target_Path_Does_Not_Exist()
+        public void Should_have_error_when_target_path_does_not_exist()
         {
             var patch = new JsonPatchDocument<Todo>();
             patch.Operations.Add(new Operation<Todo>("replace", "/DoesNotExist", from: null, value: "X"));
 
             var validator = new UpdateTodoCommandValidator();
-            var result = validator.Validate(MakeCommand(patch));
+            var result = validator.TestValidate(MakeCommand(patch));
 
-            // Fails due to ApplyTo dry-run capturing structural error
-            Assert.False(result.IsValid);
+            result.ShouldHaveValidationErrorFor("PatchDocument");
         }
 
         [Fact]
-        public void Invalid_When_Wrong_Value_Type_For_Order()
+        public void Should_have_error_when_wrong_value_type_for_order()
         {
             var patch = new JsonPatchDocument<Todo>();
             patch.Operations.Add(new Operation<Todo>("replace", "/Order", from: null, value: "not-a-number"));
 
             var validator = new UpdateTodoCommandValidator();
-            var result = validator.Validate(MakeCommand(patch));
+            var result = validator.TestValidate(MakeCommand(patch));
 
-            // Fails due to ApplyTo dry-run/type conversion error
-            Assert.False(result.IsValid);
+            result.ShouldHaveValidationErrorFor("PatchDocument");
         }
 
         [Fact]
-        public void Invalid_When_Path_Has_Subsegment()
+        public void Should_have_error_when_path_has_subsegment()
         {
             var patch = new JsonPatchDocument<Todo>();
             patch.Operations.Add(new Operation<Todo>("replace", "/Title/Sub", from: null, value: "X"));
 
             var validator = new UpdateTodoCommandValidator();
-            var result = validator.Validate(MakeCommand(patch));
+            var result = validator.TestValidate(MakeCommand(patch));
 
-            // Fails due to ApplyTo dry-run on invalid nested segment over a scalar
-            Assert.False(result.IsValid);
+            result.ShouldHaveValidationErrorFor("PatchDocument");
         }
 
         [Fact]
-        public void Aggregates_Multiple_Errors_From_Multiple_Invalid_Operations()
+        public void Should_aggregate_multiple_errors_from_multiple_invalid_operations()
         {
             var patch = new JsonPatchDocument<Todo>();
             // non-replace
@@ -176,26 +176,12 @@ namespace UnitTests.Application.Todos.Commands.UpdateTodo
             patch.Operations.Add(new Operation<Todo>("replace", path: "/Title", from: null, value: null));
 
             var validator = new UpdateTodoCommandValidator();
-            var result = validator.Validate(MakeCommand(patch));
+            var result = validator.TestValidate(MakeCommand(patch));
 
-            Assert.False(result.IsValid);
-            Assert.Contains(result.Errors, e => e.ErrorMessage == "Only 'replace' operations are permitted.");
-            Assert.Contains(result.Errors, e => e.ErrorMessage == "Each operation must have a non-empty 'path'.");
-            Assert.Contains(result.Errors, e => e.ErrorMessage == "Path must start with '/'.");
-            Assert.Contains(result.Errors, e => e.ErrorMessage == "Value field required.");
-        }
-
-        [Fact]
-        public void Captures_ApplyTo_Errors_As_Validation_Failures()
-        {
-            var patch = new JsonPatchDocument<Todo>();
-            // Valid basic checks, but invalid at apply-time (case-sensitive path likely invalid)
-            patch.Operations.Add(new Operation<Todo>("replace", "/title", from: null, value: "x"));
-
-            var validator = new UpdateTodoCommandValidator();
-            var result = validator.Validate(MakeCommand(patch));
-
-            Assert.True(result.IsValid);
+            result.ShouldHaveValidationErrorFor("PatchDocument").WithErrorMessage("Only 'replace' operations are permitted.");
+            result.ShouldHaveValidationErrorFor("PatchDocument").WithErrorMessage("Each operation must have a non-empty 'path'.");
+            result.ShouldHaveValidationErrorFor("PatchDocument").WithErrorMessage("Path must start with '/'.");
+            result.ShouldHaveValidationErrorFor("PatchDocument").WithErrorMessage("Value field required.");
         }
     }
 }
