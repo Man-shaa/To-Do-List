@@ -19,9 +19,8 @@ public sealed class CreateTodoHandlerTests
                        .ReturnsAsync(createdTodo);
 
         var createHandler = new CreateTodoHandler(todoServiceMock.Object);
-        var createCommand = new CreateTodoCommand(dto);
 
-        var result = await createHandler.Handle(createCommand, CancellationToken.None);
+        var result = await createHandler.Handle(new CreateTodoCommand(dto), CancellationToken.None);
 
         var createdResult = Assert.IsType<Todo>(result);
         Assert.Same(createdTodo, createdResult);
