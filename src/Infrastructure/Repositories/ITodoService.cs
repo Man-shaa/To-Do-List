@@ -10,7 +10,4 @@ public interface ITodoService
     public Task<Todo> CreateAsync(TodoCreateDto dto, CancellationToken ct = default);
     public Task<bool> DeleteByIdAsync(Todo? todo, CancellationToken ct = default);
     public Task DeleteAllAsync(CancellationToken ct);
-
-    // unit test purpose only
-    public string UselessMethod(string a);
 }

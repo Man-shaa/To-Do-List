@@ -24,8 +24,4 @@
     <ProjectReference Include="..\..\src\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="src\Application\Todos\Commands\DeleteTodo\" />
-  </ItemGroup>
-
 </Project>

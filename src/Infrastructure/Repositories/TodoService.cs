@@ -53,14 +53,4 @@ public sealed class TodoService(IOptions<SettingsOptions> options) : ITodoServic
         _todos.Clear();
         await Task.CompletedTask;
     }
-
-    // unit test purpose only
-    public string UselessMethod(string a)
-    {
-        string b = "Hello";
-
-        if (a == b)
-            return (a);
-        return ("");
-    }
 }
