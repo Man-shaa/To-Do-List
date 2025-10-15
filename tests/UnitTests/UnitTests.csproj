@@ -26,7 +26,6 @@
 
   <ItemGroup>
     <Folder Include="src\Application\Todos\Commands\DeleteTodo\" />
-    <Folder Include="src\Application\Todos\Commands\UpdateTodo\" />
   </ItemGroup>
 
 </Project>
