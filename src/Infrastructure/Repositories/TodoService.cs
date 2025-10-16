@@ -19,6 +19,7 @@ public sealed class TodoService(IOptions<SettingsOptions> options) : ITodoServic
     public async Task<Todo?> GetByIdAsync(int id, CancellationToken ct)
     {
         var todo = _todos.FirstOrDefault(t => t.Id == id);
+
         return await Task.FromResult(todo);
     }
 

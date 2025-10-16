@@ -1,11 +1,6 @@
-// Test sur 2 todos crees 
-// Test sur liste de todos vide
-
-using Application.Todos.Commands.CreateTodo;
 using Application.Todos.Queries.GetTodo;
 using Domain.Entities;
 using Infrastructure.Repositories;
-using Infrastructure.Repositories.DTOs;
 using Moq;
 
 namespace SnapshotTests.Application.Todos.Queries.GetTodo;

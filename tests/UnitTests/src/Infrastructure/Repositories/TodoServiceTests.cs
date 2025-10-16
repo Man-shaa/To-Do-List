@@ -2,49 +2,6 @@ using Infrastructure.Repositories;
 using Infrastructure.Repositories.Configurations;
 using Infrastructure.Repositories.DTOs;
 using Microsoft.Extensions.Options;
-//
-// namespace UnitTests.Infrastructure.Repositories
-// {
-//     public sealed class TodoServiceDeleteAllAsyncTests
-//     {
-//         private static TodoService CreateService(string baseUrl = "https://localhost/")
-//         {
-//             var options = Options.Create(new SettingsOptions { BaseUrl = new Uri(baseUrl) });
-//             return new TodoService(options);
-//         }
-//
-//         [Fact]
-//         public async Task DeleteAllAsync_should_clear_all_todos()
-//         {
-//             var todoService = CreateService();
-//             await todoService.CreateAsync(new TodoCreateDto(title: "A", order: 3), CancellationToken.None);
-//             await todoService.CreateAsync(new TodoCreateDto(title: "B", order: 3), CancellationToken.None);
-//
-//             var before = await todoService.GetAllAsync(CancellationToken.None);
-//             Assert.Equal(2, before.Count);
-//
-//             await todoService.DeleteAllAsync(CancellationToken.None);
-//
-//             var after = await todoService.GetAllAsync(CancellationToken.None);
-//             Assert.Empty(after);
-//         }
-//
-//         [Fact]
-//         public async Task DeleteAllAsync_should_not_do_anything_when_list_is_empty()
-//         {
-//             var todoService = CreateService();
-//
-//             var before = await todoService.GetAllAsync(CancellationToken.None);
-//             Assert.Empty(before);
-//
-//             await todoService.DeleteAllAsync(CancellationToken.None);
-//             await todoService.DeleteAllAsync(CancellationToken.None);
-//
-//             var after = await todoService.GetAllAsync(CancellationToken.None);
-//             Assert.Empty(after);
-//         }
-//     }
-// }
 
 namespace UnitTests.Infrastructure.Repositories
 {
