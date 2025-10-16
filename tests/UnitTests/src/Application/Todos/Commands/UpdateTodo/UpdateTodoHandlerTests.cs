@@ -44,7 +44,7 @@ namespace UnitTests.Application.Todos.Commands.UpdateTodo
         public async Task Handle_should_be_noop_with_empty_patch()
         {
             var todo = MakeTodo(title: "Original", order: 5);
-            var patch = new JsonPatchDocument<Todo>(); // no operations
+            var patch = new JsonPatchDocument<Todo>();
 
             var handler = new UpdateTodoHandler();
             var result = await handler.Handle(new UpdateTodoCommand(todo, patch), CancellationToken.None);

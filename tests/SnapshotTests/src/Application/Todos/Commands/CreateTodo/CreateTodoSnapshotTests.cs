@@ -23,9 +23,9 @@ public class CreateTodoHandlerSnapshotTests
                 It.IsAny<CancellationToken>()))
                     .ReturnsAsync(new Todo(
                         1,
-                        "Snapshot Title",
+                        todoCreateDto.Title,
                         new Uri("https://localhost:7214/todos/1"),
-                        1));
+                        todoCreateDto.Order ?? 1));
 
         var createTodoCommand = new CreateTodoCommand(todoCreateDto);
         var createHandler = new CreateTodoHandler(todoServiceMock.Object);

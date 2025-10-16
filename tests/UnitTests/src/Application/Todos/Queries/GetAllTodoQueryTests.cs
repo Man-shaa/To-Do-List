@@ -31,7 +31,7 @@ public class GetAllTodoQueryTests
     [Fact]
     public async Task Handle_ReturnsEmptyList_WhenServiceHasNoTodos()
     {
-        // Arrange
+
         var ct = CancellationToken.None;
         var expected = new List<Todo>();
 
@@ -41,10 +41,10 @@ public class GetAllTodoQueryTests
 
         var handler = new GetAllTodoHandler(todoServiceMock.Object);
 
-        // Act
+
         var result = await handler.Handle(new GetAllTodoQuery(), ct);
 
-        // Assert
+
         Assert.Empty(result);
         todoServiceMock.Verify(s => s.GetAllAsync(ct), Times.Once);
         todoServiceMock.VerifyNoOtherCalls();

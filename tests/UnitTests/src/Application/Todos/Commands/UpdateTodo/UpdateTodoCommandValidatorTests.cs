@@ -166,13 +166,13 @@ namespace UnitTests.Application.Todos.Commands.UpdateTodo
         public void Should_aggregate_multiple_errors_from_multiple_invalid_operations()
         {
             var patch = new JsonPatchDocument<Todo>();
-            // non-replace
+
             patch.Operations.Add(new Operation<Todo>("add", "/Title", from: null, value: "X"));
-            // empty path
+
             patch.Operations.Add(new Operation<Todo>("replace", path: "", from: null, value: "Y"));
-            // path without slash
+
             patch.Operations.Add(new Operation<Todo>("replace", path: "Order", from: null, value: 1));
-            // null value
+
             patch.Operations.Add(new Operation<Todo>("replace", path: "/Title", from: null, value: null));
 
             var validator = new UpdateTodoCommandValidator();
