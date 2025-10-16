@@ -22,7 +22,7 @@ public class CreateTodoSnapshotTests
                 todoCreateDto,
                 It.IsAny<CancellationToken>()))
                     .ReturnsAsync(new Todo(
-                        0,
+                        1,
                         "Snapshot Title",
                         new Uri("https://localhost:7214/todos/0"),
                         1));
@@ -34,15 +34,4 @@ public class CreateTodoSnapshotTests
 
         await Verify(sut);
     }
-    //
-    // public Task CreateTodoHandler_WithoutIdAndOrder_ReturnsTodo()
-    // {
-    //     var todo = new
-    //     {
-    //         Title = "Snapshot Title",
-    //         Url = "https://localhost:7214/todos/0",
-    //     };
-    //
-    //     return Verify(todo);
-    // }
 }

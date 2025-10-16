@@ -8,7 +8,7 @@ namespace Infrastructure.Repositories;
 public sealed class TodoService(IOptions<SettingsOptions> options) : ITodoService
 {
     private readonly List<Todo>	_todos = [];
-    private static int      	s_todoId;
+    private static int      	s_todoId = 1;
     private readonly Uri	    _baseUrl = options.Value.BaseUrl;
 
     public async Task<List<Todo>> GetAllAsync(CancellationToken ct)
