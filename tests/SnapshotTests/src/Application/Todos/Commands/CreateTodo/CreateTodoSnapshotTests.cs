@@ -6,7 +6,7 @@ using Moq;
 
 namespace SnapshotTests.Application.Todos.Commands.CreateTodo;
 
-public class CreateTodoSnapshotTests
+public class CreateTodoHandlerSnapshotTests
 {
     [Fact]
     public async Task CreateTodoHandler_WithExplicitIdAndOrder_ReturnsTodo()
@@ -24,7 +24,7 @@ public class CreateTodoSnapshotTests
                     .ReturnsAsync(new Todo(
                         1,
                         "Snapshot Title",
-                        new Uri("https://localhost:7214/todos/0"),
+                        new Uri("https://localhost:7214/todos/1"),
                         1));
 
         var createTodoCommand = new CreateTodoCommand(todoCreateDto);
