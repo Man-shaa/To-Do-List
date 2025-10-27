@@ -5,7 +5,7 @@ using Moq;
 
 namespace UnitTests.Application.Todos.Queries;
 
-public class GetTodoByIdQueryTests
+public sealed class GetTodoByIdQueryTests
 {
     [Fact]
     public async Task Handle_should_return_todo_by_id_from_service()

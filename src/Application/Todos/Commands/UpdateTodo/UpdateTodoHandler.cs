@@ -7,7 +7,7 @@ namespace Application.Todos.Commands.UpdateTodo;
 public record UpdateTodoCommand(Todo Todo, JsonPatchDocument<Todo> PatchDocument) : IRequest<Todo>;
 
 
-public sealed class UpdateTodoHandler() : IRequestHandler<UpdateTodoCommand, Todo>
+public sealed class UpdateTodoHandler : IRequestHandler<UpdateTodoCommand, Todo>
 {
     public Task<Todo> Handle(UpdateTodoCommand request, CancellationToken cancellationToken)
     {

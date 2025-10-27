@@ -6,8 +6,6 @@ namespace Application.Todos.Commands.UpdateTodo;
 
 public sealed class UpdateTodoCommandValidator : AbstractValidator<UpdateTodoCommand>
 {
-    private static readonly StringComparer PathComparer = StringComparer.OrdinalIgnoreCase;
-
     public UpdateTodoCommandValidator()
     {
         ClassLevelCascadeMode = CascadeMode.Stop;
@@ -16,12 +14,12 @@ public sealed class UpdateTodoCommandValidator : AbstractValidator<UpdateTodoCom
             .NotNull()
             .WithMessage("PatchDocument is required.");
 
-        RuleFor(x => x.PatchDocument!.Operations)
+        RuleFor(x => x.PatchDocument.Operations)
             .NotNull()
             .NotEmpty()
             .WithMessage("PatchDocument must have at least one operation.");
 
-        RuleFor(x => x.PatchDocument!)
+        RuleFor(x => x.PatchDocument)
             .Custom((patch, context) =>
             {
                 if (patch.Operations.Any(op => op.OperationType != OperationType.Replace))
@@ -39,12 +37,8 @@ public sealed class UpdateTodoCommandValidator : AbstractValidator<UpdateTodoCom
                         context.AddFailure("PatchDocument", "Path must start with '/'.");
                         continue;
                     }
-
-                    if (op.OperationType == OperationType.Replace)
-                    {
-                        if (op.value is null)
+                    if (op is { OperationType: OperationType.Replace, value: null })
                             context.AddFailure("PatchDocument", "Value field required.");
-                    }
                 }
 
                 var temp = new Todo(id: 12, "Title", new Uri("https://localhost/todos/12"), order: 3);

@@ -5,7 +5,7 @@ using Moq;
 
 namespace UnitTests.Application.Todos.Queries;
 
-public class GetAllTodoQueryTests
+public sealed class GetAllTodoQueryTests
 {
     [Fact]
     public async Task Handle_should_return_all_todos_from_service()

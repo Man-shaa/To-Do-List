@@ -6,7 +6,7 @@ using NSubstitute;
 
 namespace SnapshotTests.Application.Todos.Commands.CreateTodo;
 
-public class CreateTodoHandlerSnapshotTests
+public sealed class CreateTodoHandlerSnapshotTests
 {
     [Fact]
     public async Task CreateTodoHandler_WithExplicitIdAndOrder_ReturnsTodo()
