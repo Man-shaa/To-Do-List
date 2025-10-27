@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.JsonPatch.Operations;
 
 namespace SnapshotTests.Application.Todos.Commands.UpdateTodo;
 
-public class UpdateTodoValidationSnapshotTests
+public sealed class UpdateTodoHandlerValidatorSnapshotTests
 {
     [Fact]
     public Task Invalid_patchDocument_produces_expected_validation_errors()

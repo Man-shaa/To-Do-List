@@ -6,7 +6,7 @@ using NSubstitute;
 
 namespace SnapshotTests.Application.Todos.Queries.GetTodo;
 
-public class GetAllTodoHandlerSnapshotTests
+public sealed class GetAllTodoHandlerSnapshotTests
 {
     [Fact]
     public async Task GetAllTodoHandler_WithTwoTodos_ReturnsListOfTwoTodos()
@@ -35,7 +35,7 @@ public class GetAllTodoHandlerSnapshotTests
         var getAllTodoHandler = new GetAllTodoHandler(todoServiceMock);
 
         todoServiceMock.GetAllAsync(It.IsAny<CancellationToken>())
-            .Returns(new List<Todo> {});
+            .Returns(new List<Todo>());
 
         var sut = getAllTodoHandler.Handle(getAllTodoQuery, CancellationToken.None); 
 

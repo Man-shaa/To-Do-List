@@ -25,7 +25,9 @@ public static class TodoEndpoints
             .Produces<Todo>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status400BadRequest);
 
-        app.MapPatch("/todos/{id:int}", UpdateTodoByIdAsync);
+        app.MapPatch("/todos/{id:int}", UpdateTodoByIdAsync)
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status400BadRequest);
 
         app.MapDelete("/todos/", DeleteAllTodoAsync)
             .Produces(StatusCodes.Status200OK);

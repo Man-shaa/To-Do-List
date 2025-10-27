@@ -3,7 +3,7 @@ using Domain.Entities;
 
 namespace SnapshotTests.Application.Todos.Commands.UpdateTodo;
 
-public class CreateTodoHandlerSnapshotTests
+public sealed class UpdateTodoHandlerSnapshotTests
 {
     [Fact]
     public async Task UpdateTodoHandler_WithValidReplaceTitle_ReturnsUpdatedTodo()

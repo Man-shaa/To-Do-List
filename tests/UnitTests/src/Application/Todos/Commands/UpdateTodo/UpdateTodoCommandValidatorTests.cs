@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.JsonPatch.Operations;
 
 namespace UnitTests.Application.Todos.Commands.UpdateTodo
 {
-    public class UpdateTodoValidatorTests
+    public sealed class UpdateTodoValidatorTests
     {
         private static Todo MakeTodo(int id = 1, string title = "Title", string url = "https://localhost/todos/1", int order = 1)
             => new Todo(id: id, title: title, url: new Uri(url), order: order);
@@ -33,7 +33,7 @@ namespace UnitTests.Application.Todos.Commands.UpdateTodo
 
             var result = validator.TestValidate(MakeCommand(patch));
 
-            result.ShouldHaveValidationErrorFor(x => x.PatchDocument!.Operations)
+            result.ShouldHaveValidationErrorFor(x => x.PatchDocument.Operations)
                 .WithErrorMessage("PatchDocument must have at least one operation.");
         }
         

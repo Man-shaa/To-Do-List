@@ -1,12 +1,11 @@
 using Application.Todos.Queries.GetTodo;
 using Domain.Entities;
 using Infrastructure.Repositories;
-using Moq;
 using NSubstitute;
 
 namespace SnapshotTests.Application.Todos.Queries.GetTodo;
 
-public class GetTodoByIdHandlerSnapshotTests
+public sealed class GetTodoByIdHandlerSnapshotTests
 {
     [Fact]
     public async Task GetTodoByIdHandler_WithExistingTodo_ReturnsTodo()

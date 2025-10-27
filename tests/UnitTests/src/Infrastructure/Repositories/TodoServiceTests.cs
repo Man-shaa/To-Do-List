@@ -150,7 +150,7 @@ namespace UnitTests.Infrastructure.Repositories
         {
             var todoService = CreateService();
 
-            var t1 = await todoService.CreateAsync(new TodoCreateDto { Title = "A" }, CancellationToken.None);
+            await todoService.CreateAsync(new TodoCreateDto { Title = "A" }, CancellationToken.None);
             var t2 = await todoService.CreateAsync(new TodoCreateDto { Title = "B" }, CancellationToken.None);
             var lastIdBefore = t2.Id;
 
