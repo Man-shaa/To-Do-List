@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.JsonPatch.Operations;
 
 namespace ApplicationTests.Todos.Commands.UpdateTodo;
 
-public sealed class UpdateTodoHandlerValidatorSnapshotTests
+
+public sealed class UpdateTodoHandlerValidatorTests
 {
     [Fact]
     public Task Invalid_patchDocument_produces_expected_validation_errors()
@@ -30,10 +31,7 @@ public sealed class UpdateTodoHandlerValidatorSnapshotTests
 
         return Verify(sut);
     }
-}
 
-public sealed class UpdateTodoHandlerValidatorTests
-{
     private static Todo MakeTodo(int id = 1, string title = "Title", string url = "https://localhost/todos/1", int order = 1)
         => new Todo(id: id, title: title, url: new Uri(url), order: order);
 

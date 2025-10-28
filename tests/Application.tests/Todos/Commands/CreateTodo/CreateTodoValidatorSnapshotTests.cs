@@ -5,7 +5,7 @@ using Infrastructure.Repositories.DTOs;
 
 namespace ApplicationTests.Todos.Commands.CreateTodo;
 
-public sealed class CreateTodoValidatorSnapshotTests
+public sealed class CreateTodoCommandValidatorTests
 {
     private static ValidationResult Validate(string? title, int? order)
     {
@@ -34,6 +34,10 @@ public sealed class CreateTodoValidatorSnapshotTests
         ["order_null", "New Todo", null!],
         ["order_negative", "New Todo", -1],
     ];
+    
+    private static CreateTodoCommand CreateCommand(string? title, int? order = null) =>
+        new(new TodoCreateDto { Title = title, Order = order });
+
 
     [Theory]
     [MemberData(nameof(Cases))]
@@ -42,12 +46,6 @@ public sealed class CreateTodoValidatorSnapshotTests
         var sut = Shape(Validate(title, order));
         return Verify(sut);
     }
-}
-
-public sealed class CreateTodoCommandValidatorTests
-{
-    private static CreateTodoCommand CreateCommand(string? title, int? order = null) =>
-        new(new TodoCreateDto { Title = title, Order = order });
 
     [Fact]
     public void Should_have_error_when_title_is_null()

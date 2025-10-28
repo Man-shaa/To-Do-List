@@ -6,7 +6,7 @@ using NSubstitute;
 
 namespace ApplicationTests.Todos.Queries.GetTodo;
 
-public sealed class GetTodoByIdHandlerSnapshotTests
+public sealed class GetTodoByIdQueryTests
 {
     [Fact]
     public async Task GetTodoByIdHandler_WithExistingTodo_ReturnsTodo()
@@ -41,10 +41,7 @@ public sealed class GetTodoByIdHandlerSnapshotTests
 
         await Verify(sut);
     }
-}
 
-public sealed class GetTodoByIdQueryTests
-{
     [Fact]
     public async Task Handle_should_return_todo_by_id_from_service()
     {
