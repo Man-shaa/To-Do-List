@@ -4,8 +4,29 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Exceptions;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 
-namespace UnitTests.Application.Todos.Commands.UpdateTodo
+namespace ApplicationTests.Todos.Commands.UpdateTodo;
+
+public sealed class UpdateTodoHandlerSnapshotTests
 {
+    [Fact]
+    public async Task UpdateTodoHandler_WithValidReplaceTitle_ReturnsUpdatedTodo()
+    {
+        var todo = new Todo(
+            1,
+            "Initial Title",
+            new Uri("https://localhost:7214/todos/1"),
+            1);
+
+        var patchDocument = new Microsoft.AspNetCore.JsonPatch.JsonPatchDocument<Todo>();
+        patchDocument.Replace(t => t.Title, "Updated Title");
+
+        var updateTodoCommand = new UpdateTodoCommand(todo, patchDocument);
+        var updateHandler = new UpdateTodoHandler();
+
+        var sut = await updateHandler.Handle(updateTodoCommand, CancellationToken.None);
+
+        await Verify(sut);
+    }
     public sealed class UpdateTodoHandlerTests
     {
         private static Todo MakeTodo(int id = 1, string title = "Title", string url = "https://localhost/todos/1", int order = 1)

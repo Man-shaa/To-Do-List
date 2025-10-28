@@ -3,7 +3,7 @@ using Domain.Entities;
 using Infrastructure.Repositories;
 using Moq;
 
-namespace UnitTests.Application.Todos.Commands.DeleteTodo
+namespace ApplicationTests.Todos.Commands.DeleteTodo
 {
     public sealed class DeleteTodoByIdHandlerTests
     {
