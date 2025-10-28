@@ -38,7 +38,7 @@ public sealed class CreateTodoValidatorSnapshotTests
     [MemberData(nameof(Cases))]
     public Task CreateTodoCommandValidator_snapshot(string caseName, string? title, int? order)
     {
-        var result = Shape(Validate(title, order));
-        return Verify(result);
+        var sut = Shape(Validate(title, order));
+        return Verify(sut);
     }
 }

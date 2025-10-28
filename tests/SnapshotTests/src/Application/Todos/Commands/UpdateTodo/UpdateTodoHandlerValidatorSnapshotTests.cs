@@ -20,13 +20,13 @@ public sealed class UpdateTodoHandlerValidatorSnapshotTests
         var command = new UpdateTodoCommand(todo, patch);
         var validator = new UpdateTodoCommandValidator();
 
-        var result = validator.Validate(command);
+        var validatorResult = validator.Validate(command);
 
-        var errors = result.Errors
+        var sut = validatorResult.Errors
             .Select(e => new { e.PropertyName, e.ErrorMessage })
             .OrderBy(e => e.PropertyName)
             .ThenBy(e => e.ErrorMessage);
 
-        return Verify(errors);
+        return Verify(sut);
     }
 }
