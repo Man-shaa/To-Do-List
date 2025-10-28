@@ -7,7 +7,8 @@ using Moq;
 
 namespace ApplicationTests.Todos.Commands.CreateTodo;
 
-public sealed class CreateTodoHandlerSnapshotTests
+
+public sealed class CreateTodoHandlerTests
 {
     [Fact]
     public async Task CreateTodoHandler_WithExplicitIdAndOrder_ReturnsTodo()
@@ -33,10 +34,7 @@ public sealed class CreateTodoHandlerSnapshotTests
         
         await Verify(sut);
     }
-}
-
-public sealed class CreateTodoHandlerTests
-{
+    
     [Fact]
     public async Task Handle_should_return_created_result_with_created_todo()
     {
