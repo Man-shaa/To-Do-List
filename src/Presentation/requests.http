@@ -1,0 +1,48 @@
+### Get /
+GET https://localhost:7214/
+Accept: application/json
+
+### Get all todos
+GET https://localhost:7214/todos
+Accept: application/json
+
+### Get todo by ID
+GET https://localhost:7214/todos/1
+Accept: application/json
+
+### Create a new todo
+POST https://localhost:7214/todos
+Content-Type: application/json
+
+{
+  "title": "Title",
+  "order": 2
+}
+
+### Patch a Todo
+PATCH https://localhost:7214/todos/1
+Content-Type: application/json
+
+[
+    {
+      "op": "replace",
+      "path": "/order",
+      "value": -1
+    },
+    {
+      "op": "replace",
+      "path": "/title",
+      "value": "New Title"
+    },
+    {
+      "op": "replace",
+      "path": "/completed",
+      "value": true
+    }
+]
+
+### Delete todo by ID
+DELETE https://localhost:7214/todos/1
+
+### Delete all Todos
+DELETE https://localhost:7214/todos/
