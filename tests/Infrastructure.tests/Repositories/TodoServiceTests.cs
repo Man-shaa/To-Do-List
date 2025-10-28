@@ -3,13 +3,13 @@ using Infrastructure.Repositories.Configurations;
 using Infrastructure.Repositories.DTOs;
 using Microsoft.Extensions.Options;
 
-namespace UnitTests.Infrastructure.Repositories
+namespace InfrastructureTests.Repositories
 {
     [Collection("TodoService.All")]
     public sealed class TodoServiceTests
     {
-        private static TodoService CreateService(string baseUrl = "https://localhost/")
-            => new TodoService(Options.Create(new SettingsOptions { BaseUrl = new Uri(baseUrl) }));
+        private static TodoService CreateService(string baseUrl = "https://localhost/") =>
+            new(Options.Create(new SettingsOptions { BaseUrl = new Uri(baseUrl) }));
 
         [Fact]
         public async Task GetAllAsync_should_return_empty_list_initially_and_same_reference_across_calls()
@@ -162,5 +162,5 @@ namespace UnitTests.Infrastructure.Repositories
     }
 
     [CollectionDefinition("TodoService.All", DisableParallelization = true)]
-    public sealed class TodoServiceAllCollectionDefinition { }
+    public sealed class TodoServiceAllCollectionDefinition;
 }
