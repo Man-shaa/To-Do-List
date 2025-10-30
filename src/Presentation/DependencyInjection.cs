@@ -10,7 +10,7 @@ public static class DependencyInjection
 {
     public static IHostApplicationBuilder AddPresentation(this IHostApplicationBuilder builder)
     {
-        builder.Services.AddSingleton<TodoService>();
+        builder.Services.AddScoped<TodoService>();
 
         builder.Services.AddControllers(options =>
             {

@@ -1,3 +1,4 @@
+using Infrastructure.Persistence;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Configurations;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +16,10 @@ public static class DependencyInjection
             .BindConfiguration(SettingsOptions.ConfigurationSectionName)
             .ValidateDataAnnotations()
             .ValidateOnStart();
+
+        builder.AddNpgsqlDbContext<TodoDbContext>("postgres");
+
+        builder.Services.AddScoped<ITodoRepository, TodoRepository>();
 
         builder.Services.AddSingleton<IValidateOptions<SettingsOptions>, ValidateSettingsOptions>();
 
