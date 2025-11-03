@@ -1,4 +1,4 @@
 namespace Application
 {
-    public abstract class AssemblyMarker { }
+    public abstract class AssemblyMarker;
 }

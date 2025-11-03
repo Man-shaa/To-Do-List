@@ -40,13 +40,12 @@ public sealed class TodoService(IOptions<SettingsOptions> options) : ITodoServic
     
     public async Task<bool> DeleteByIdAsync(Todo? todo, CancellationToken ct)
     {
-        if (todo is not null)
-        {
-            _todos.Remove(todo);
-            await Task.CompletedTask;
-            return true;
-        }
-        return false;
+        if (todo is null)
+            return false;
+
+        _todos.Remove(todo);
+        await Task.CompletedTask;
+        return true;
     }
 
     public async Task DeleteAllAsync(CancellationToken ct)

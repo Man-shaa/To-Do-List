@@ -32,7 +32,7 @@ public sealed class UpdateTodoCommandValidator : AbstractValidator<UpdateTodoCom
                         context.AddFailure("PatchDocument", "Each operation must have a non-empty 'path'.");
                         continue;
                     }
-                    if (!op.path.StartsWith("/", StringComparison.Ordinal))
+                    if (!op.path.StartsWith('/'))
                     {
                         context.AddFailure("PatchDocument", "Path must start with '/'.");
                         continue;

@@ -39,11 +39,11 @@ public static class DependencyInjection
                                 dataSourceBuilder.ConnectionStringBuilder.IncludeErrorDetail = true;
                         }
                     ));
-                if (builder.Environment.IsDevelopment())
-                {
-                    options.EnableDetailedErrors();
-                    options.EnableSensitiveDataLogging();
-                }
+                if (!builder.Environment.IsDevelopment())
+                    return;
+
+                options.EnableDetailedErrors();
+                options.EnableSensitiveDataLogging();
             });
 
         builder.EnrichNpgsqlDbContext<Persistence.TodoDbContext>();

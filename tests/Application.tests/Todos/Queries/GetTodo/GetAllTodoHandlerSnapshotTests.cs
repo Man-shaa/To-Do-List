@@ -34,7 +34,7 @@ public sealed class GetAllTodoQueryTests
         var getAllTodoHandler = new GetAllTodoHandler(todoDbContext);
 
         todoDbContext.GetAllAsync(It.IsAny<CancellationToken>())
-            .Returns(new List<Todo>());
+            .Returns([]);
 
         var sut = getAllTodoHandler.Handle(getAllTodoQuery, CancellationToken.None); 
 
@@ -47,7 +47,7 @@ public sealed class GetAllTodoQueryTests
         var expectedTodoList = new List<Todo>
         {
             new(id: 1, title: "a", url: new Uri("http://localhost/todos/1"), order: 1),
-            new(id: 2, title: "b", url: new Uri("http://localhost/todos/2"), order: 2),
+            new(id: 2, title: "b", url: new Uri("http://localhost/todos/2"), order: 2)
         };
 
         var todoDbContext = new Mock<ITodoRepository>();

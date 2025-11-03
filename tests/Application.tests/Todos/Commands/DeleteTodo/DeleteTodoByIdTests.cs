@@ -7,8 +7,9 @@ namespace ApplicationTests.Todos.Commands.DeleteTodo
 {
     public sealed class DeleteTodoByIdHandlerTests
     {
-        private static Todo MakeTodo(int id = 1, string title = "Title", string url = "https://localhost/todos/1", int order = 1)
-            => new Todo(id: id, title: title, url: new Uri(url), order: order);
+        private static Todo MakeTodo(int id = 1, string title = "Title", string url = "https://localhost/todos/1",
+            int order = 1) =>
+            new(id: id, title: title, url: new Uri(url), order: order);
 
         [Fact]
         public async Task Handle_should_get_by_id_then_delete_and_return_true()

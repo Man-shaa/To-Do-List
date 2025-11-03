@@ -32,7 +32,7 @@ public sealed class CreateTodoCommandValidatorTests
         ["title_empty", "", 1],
         ["title_whitespace", "   ", 1],
         ["order_null", "New Todo", null!],
-        ["order_negative", "New Todo", -1],
+        ["order_negative", "New Todo", -1]
     ];
     
     private static CreateTodoCommand CreateCommand(string? title, int? order = null) =>
