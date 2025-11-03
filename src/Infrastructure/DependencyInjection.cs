@@ -1,8 +1,6 @@
-using Infrastructure.Persistence;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Configurations;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Hosting;
@@ -21,7 +19,7 @@ public static class DependencyInjection
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
-        builder.Services.AddScoped<ITodoService, TodoService>();
+        builder.Services.AddSingleton<ITodoService, TodoService>();
         builder.Services.AddSingleton<IValidateOptions<SettingsOptions>, ValidateSettingsOptions>();
 
         return builder;
@@ -29,20 +27,7 @@ public static class DependencyInjection
 
     private static void AddCatalogDbContext(this IHostApplicationBuilder builder)
     {
-        // var config = new ConfigurationBuilder()
-        //     .SetBasePath(Directory.GetCurrentDirectory())
-        //     .AddJsonFile("appsettings.json", optional: true)
-        //     .AddJsonFile("appsettings.Development.json", optional: true)
-        //     .AddEnvironmentVariables()
-        //     .Build();
-        //
-        // var cs = config.GetConnectionString("postgres");
-        // if (string.IsNullOrWhiteSpace(cs))
-        //     throw new InvalidOperationException("Connection string 'postgres' not found (ConnectionStrings:postgres).");
-
-
-
-        builder.AddNpgsqlDbContext<TodoDbContext>("todo-db",
+        builder.AddNpgsqlDbContext<Persistence.TodoDbContext>("todo-db",
             null,
             options =>
             {
@@ -61,7 +46,7 @@ public static class DependencyInjection
                 }
             });
 
-        builder.EnrichNpgsqlDbContext<TodoDbContext>();
+        builder.EnrichNpgsqlDbContext<Persistence.TodoDbContext>();
 
         builder.Services.AddScoped<ITodoRepository, TodoRepository>();
     }

@@ -1,5 +1,4 @@
 using Domain.Entities;
-using Infrastructure.Persistence;
 using Infrastructure.Repositories.Configurations;
 using Infrastructure.Repositories.DTOs;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +6,7 @@ using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Repositories;
 
-public sealed class TodoRepository(IOptions<SettingsOptions> options, TodoDbContext dbContext) : ITodoRepository
+public sealed class TodoRepository(IOptions<SettingsOptions> options, Persistence.TodoDbContext dbContext) : ITodoRepository
 {
     private static int      	s_todoId = 1;
     private readonly Uri	    _baseUrl = options.Value.BaseUrl;
@@ -38,11 +37,11 @@ public sealed class TodoRepository(IOptions<SettingsOptions> options, TodoDbCont
         return await Task.FromResult(todo);
     }
     
-    public async Task<Todo> UpdateAsync(Todo todo)
+    public async Task<Todo> UpdateAsync(Todo todo, CancellationToken ct = default)
     {
         var updatedTodo = dbContext.Todos.Update(todo);
-        await dbContext.SaveChangesAsync();
-        return updatedTodo.Entity;
+        await dbContext.SaveChangesAsync(ct);
+        return Task.FromResult(updatedTodo.Entity).Result;
     }
     
     public async Task<bool> DeleteByIdAsync(Todo? todo, CancellationToken ct)

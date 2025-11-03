@@ -5,9 +5,9 @@ var builder = DistributedApplication.CreateBuilder(args);
 var postgres = builder.AddPostgres("postgres")
     .WithHostPort(15432)
     .WithPgWeb()
+    .WithDataVolume()
+    .WithLifetime(ContainerLifetime.Persistent)
     .AddDatabase("todo-db");
-    // .WithDataVolume()
-    // .WithLifetime(ContainerLifetime.Persistent);
 
 builder.AddProject<Presentation>("Presentation")
     .WithEnvironment("SwaggerEnabled", "true")
