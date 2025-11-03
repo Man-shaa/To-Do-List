@@ -17,7 +17,7 @@ public sealed class UpdateTodoHandlerTests
             new Uri("https://localhost:7214/todos/1"),
             1);
 
-        var patchDocument = new Microsoft.AspNetCore.JsonPatch.JsonPatchDocument<Todo>();
+        var patchDocument = new JsonPatchDocument<Todo>();
         patchDocument.Replace(t => t.Title, "Updated Title");
 
         var updateTodoCommand = new UpdateTodoCommand(todo, patchDocument);

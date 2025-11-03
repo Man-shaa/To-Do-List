@@ -25,7 +25,7 @@ app.UseSwaggerUI();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
-    db.Database.Migrate();
+    await db.Database.MigrateAsync();
 }
 
 await app.RunAsync();
