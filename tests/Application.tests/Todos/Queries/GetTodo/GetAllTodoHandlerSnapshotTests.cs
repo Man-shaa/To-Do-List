@@ -4,7 +4,7 @@ using Infrastructure.Repositories;
 using Moq;
 using NSubstitute;
 
-namespace ApplicationTests.Todos.Queries.GetTodo;
+namespace Application.Tests.Todos.Queries.GetTodo;
 
 public sealed class GetAllTodoQueryTests
 {

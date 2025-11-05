@@ -2,7 +2,7 @@ using Application.Todos.Commands.DeleteTodo;
 using Infrastructure.Repositories;
 using Moq;
 
-namespace ApplicationTests.Todos.Commands.DeleteTodo
+namespace Application.Tests.Todos.Commands.DeleteTodo
 {
     public sealed class DeleteAllTodoHandlerTests
     {

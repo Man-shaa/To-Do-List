@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.JsonPatch.Exceptions;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Moq;
 
-namespace ApplicationTests.Todos.Commands.UpdateTodo;
+namespace Application.Tests.Todos.Commands.UpdateTodo;
 
 public sealed class UpdateTodoHandlerTests
 {

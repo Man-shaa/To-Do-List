@@ -4,7 +4,7 @@ using FluentValidation.TestHelper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 
-namespace ApplicationTests.Todos.Commands.UpdateTodo;
+namespace Application.Tests.Todos.Commands.UpdateTodo;
 
 
 public sealed class UpdateTodoHandlerValidatorTests

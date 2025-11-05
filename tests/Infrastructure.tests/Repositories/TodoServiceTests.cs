@@ -3,7 +3,7 @@ using Infrastructure.Repositories.Configurations;
 using Infrastructure.Repositories.DTOs;
 using Microsoft.Extensions.Options;
 
-namespace InfrastructureTests.Repositories;
+namespace Infrastructure.Tests.Repositories;
 
 [Collection("TodoService.All")]
 public sealed class TodoServiceTests

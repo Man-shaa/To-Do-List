@@ -5,7 +5,7 @@ using Infrastructure.Repositories.DTOs;
 using NSubstitute;
 using Moq;
 
-namespace ApplicationTests.Todos.Commands.CreateTodo;
+namespace Application.Tests.Todos.Commands.CreateTodo;
 
 
 public sealed class CreateTodoHandlerTests
