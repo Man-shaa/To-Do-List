@@ -11,7 +11,7 @@ public static class DependencyInjection
 {
     public static IHostApplicationBuilder AddInfrastructure(this IHostApplicationBuilder builder)
     {
-        AddCatalogDbContext(builder);
+        AddTodoDbContext(builder);
 
         
         builder.Services.AddOptions<SettingsOptions>()
@@ -25,7 +25,7 @@ public static class DependencyInjection
         return builder;
     }
 
-    private static void AddCatalogDbContext(this IHostApplicationBuilder builder)
+    private static void AddTodoDbContext(this IHostApplicationBuilder builder)
     {
         builder.AddNpgsqlDbContext<Persistence.TodoDbContext>("todo-db",
             null,

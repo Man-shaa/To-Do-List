@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Aspire.Hosting" Version="9.5.2" />
         <PackageReference Include="Aspire.Hosting.Testing" Version="9.5.2" />
         <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.5.2" />
         <PackageReference Include="EFCore.BulkExtensions.PostgreSql" Version="9.0.2" />

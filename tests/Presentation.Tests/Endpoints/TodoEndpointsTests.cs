@@ -1,62 +1,60 @@
-using Aspire.Hosting.Testing;
-using Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Presentation.Tests.Fixtures;
+using Presentation.Tests.Common.Constants;
 
 namespace Presentation.Tests.Endpoints;
 
-public sealed class TodoEndpointsTests
-    // : IClassFixture<TodoApiFixture>, IAsyncLifetime
+[Collection(Constants.TodoCollection)]
+public sealed class GetAllTodosEndpointTests(CatalogApiFixture fixture)
+    : IClassFixture<CatalogApiFixture>, IAsyncLifetime
 {
+    /// <see cref="ProductEndpoints.GetProductsV1"/>
     [Fact]
-    public async Task GetAllTodos_returnsSuccess()
+    public async Task ProductShouldBeReturned()
     {
-        var builder = await DistributedApplicationTestingBuilder
-            .CreateAsync<Projects.AppHost>();
+        var url = $"{ApiRoutes.Root}/{ApiRoutes.Products.GetProducts}?eans={ProductFixture.Gtin.ToEan()}"
+            .WithApiVersion(1);
         
-        builder.Services.ConfigureHttpClientDefaults(clientBuilder =>
-        {
-            clientBuilder.AddStandardResilienceHandler();
-        });
-        // builder.AddNpgsqlDbContext<TodoDbContext>("todo-db",
-        //     null,
-        //     options =>
-        //     {
-        //         options.UseNpgsql(npgsqlOptionsAction =>
-        //             npgsqlOptionsAction.ConfigureDataSource(dataSourceBuilder =>
-        //                 {
-        //                     dataSourceBuilder.EnableDynamicJson();
-        //                     if (builder.Environment.IsDevelopment())
-        //                         dataSourceBuilder.ConnectionStringBuilder.IncludeErrorDetail = true;
-        //                 }
-        //             ));
-        //         if (!builder.Environment.IsDevelopment())
-        //             return;
-        //
-        //         options.EnableDetailedErrors();
-        //         options.EnableSensitiveDataLogging();
-        //     });
-        //
-        // builder.EnrichNpgsqlDbContext<TodoDbContext>();
-
-        await using var app = await builder.BuildAsync();
-
-        await app.StartAsync();
-        // var dbcontext = app.Services.GetRequiredService<TodoDbContext>();
-        // await dbcontext.Database.MigrateAsync();
-        // dbcontext.Todos.Add(new Domain.Entities.Todo(1, "Test Todo", new Uri("https://localhost/1"), 1));
-        // await dbcontext.SaveChangesAsync();
-
-        var httpClient = app.CreateHttpClient("Presentation");
-        const string getTodosUrl = "/todos";
-
-        var sut = await httpClient.GetAsync(getTodosUrl);
+        var sut = await fixture.Client.GetAsync(url);
 
         await Verify(sut);
     }
 
-    // public ValueTask InitializeAsync() => fixture.ResetDatabaseAsync();
-    //
-    // public ValueTask DisposeAsync() => ValueTask.CompletedTask;
+    public Task InitializeAsync() => fixture.ResetDatabaseAsync();
+
+    public Task DisposeAsync() => Task.CompletedTask;
 }
+
+// using System.Net.Http.Json;
+// using System.Text.Json;
+// using Infrastructure.Repositories.DTOs;
+// using Presentation.Tests.Fixtures;
+// using VerifyXunit;
+//
+// namespace Presentation.Tests.Endpoints;
+//
+// [Collection("TodosCollection")]
+// public sealed class TodoEndpointsTests(TodoApiFixture fixture) : IClassFixture<TodoApiFixture>, IAsyncLifetime
+// {
+//     [Fact]
+//     public async Task GetAllTodos_isSnapshotted()
+//     {
+//         // Seed through the API for full-stack coverage
+//         _ = await fixture.Client.PostAsJsonAsync("/todos", new TodoCreateDto
+//         {
+//             Order = 1,
+//             Title = "Test Todo"
+//         });
+//
+//         var response = await fixture.Client.GetAsync("/todos");
+//         var body = await response.Content.ReadAsStringAsync();
+//
+//         await Verify(new
+//         {
+//             StatusCode = (int)response.StatusCode,
+//             Body = JsonDocument.Parse(body)
+//         });
+//     }
+//
+//     public ValueTask InitializeAsync() => fixture.ResetDatabaseAsync();
+//     public ValueTask DisposeAsync() => ValueTask.CompletedTask;
+// }
