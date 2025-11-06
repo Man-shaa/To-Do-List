@@ -1,27 +1,97 @@
-using Presentation.Tests.Fixtures;
-using Presentation.Tests.Common.Constants;
+using System.Data.Common;
+using Aspire.Hosting;
+using Aspire.Hosting.ApplicationModel;
+using Infrastructure.Persistence;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Npgsql;
+using Respawn;
 
-namespace Presentation.Tests.Endpoints;
+namespace  Presentation.Tests.Endpoints;
 
-[Collection(Constants.TodoCollection)]
-public sealed class GetAllTodosEndpointTests(CatalogApiFixture fixture)
-    : IClassFixture<CatalogApiFixture>, IAsyncLifetime
+[Collection(Common.Constants.TodoCollection)]
+public sealed class GetAllTodos_ReturnsSuccess : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    /// <see cref="ProductEndpoints.GetProductsV1"/>
+    private HttpClient? _client;
+    public HttpClient Client => _client ??= CreateDefaultClient();
+
+    private IHost _app;
+    private IResourceBuilder<PostgresServerResource> Postgres { get; }
+    private string? _postgresConnectionString;
+
+    private DbConnection _dbConnection = default!;
+    private Respawner _respawner = default!;
+
+    public GetAllTodos_ReturnsSuccess()
+    {
+        var options =  new DistributedApplicationOptions
+        {
+            AssemblyName = typeof(Program).Assembly.FullName, DisableDashboard = true
+        };
+        var appBuilder = DistributedApplication.CreateBuilder(options);
+        Postgres = appBuilder.AddPostgres("postgres")
+            .WithImageTag("latest");
+        _app = appBuilder.Build();
+    }
+
+    protected override IHost CreateHost(IHostBuilder builder)
+    {
+        builder.ConfigureHostConfiguration(config =>
+        {
+            config.AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                {
+                    $"ConnectionStrings:{Postgres.Resource.Name}", _postgresConnectionString
+                }
+            });
+        });
+        return base.CreateHost(builder);
+    }
+
+    public async ValueTask InitializeAsync()
+    {
+        await _app.StartAsync();
+
+        var cts = CancellationToken.None;
+        await _app.Services.GetRequiredService<ResourceNotificationService>()
+            .WaitForResourceHealthyAsync(Postgres.Resource.Name, cts);;
+
+        _postgresConnectionString = await Postgres.Resource.GetConnectionStringAsync(cts);
+        using var scope = Services.CreateScope();
+        var dbContext = scope.ServiceProvider
+            .GetRequiredService<TodoDbContext>();
+        await dbContext.Database.EnsureCreatedAsync(cts);
+
+        _dbConnection = new NpgsqlConnection(_postgresConnectionString);
+        await _dbConnection.OpenAsync(cts);
+        _respawner = await Respawner.CreateAsync(_dbConnection, new
+        RespawnerOptions
+        {
+            DbAdapter = DbAdapter.Postgres
+        });
+    }
+
+    public new async ValueTask DisposeAsync()
+    {
+        _dbConnection.Dispose();
+        await _app.StopAsync();
+        if (_app is IAsyncDisposable asyncDisposable)
+            await asyncDisposable.DisposeAsync();
+        else
+            _app.Dispose();
+    }
+
     [Fact]
     public async Task ProductShouldBeReturned()
     {
-        var url = $"{ApiRoutes.Root}/{ApiRoutes.Products.GetProducts}?eans={ProductFixture.Gtin.ToEan()}"
-            .WithApiVersion(1);
+        var url = "/todos";
         
-        var sut = await fixture.Client.GetAsync(url);
+        var sut = Client.GetAsync(url);
 
         await Verify(sut);
     }
-
-    public Task InitializeAsync() => fixture.ResetDatabaseAsync();
-
-    public Task DisposeAsync() => Task.CompletedTask;
 }
 
 // using System.Net.Http.Json;
