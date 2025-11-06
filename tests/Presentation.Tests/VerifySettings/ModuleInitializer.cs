@@ -7,8 +7,10 @@ public static class ModuleInitializer
     [ModuleInitializer]
     public static void Initialize()
     {
+        VerifyDiffPlex.Initialize();
         VerifierSettings.InitializePlugins();
-        VerifierSettings.ScrubMember("RequestUri");
-        VerifierSettings.ScrubMember("Date");
+        VerifierSettings.ScrubMembers("Date", "RequestUri");
+        VerifierSettings.DontScrubDateTimes();
+        VerifierSettings.UseStrictJson();
     }
 }
