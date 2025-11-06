@@ -17,6 +17,5 @@ public class TodoDbContext(DbContextOptions<TodoDbContext> options) : DbContext(
             entity.Property(e => e.Url).IsRequired();
             entity.Property(e => e.Completed).HasDefaultValue(false);
         });
-        
     }
 }
