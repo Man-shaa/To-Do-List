@@ -1,3 +1,4 @@
+using System.Net;
 using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Testing;
@@ -9,14 +10,32 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Presentation.Tests.fixture;
 
+[CollectionDefinition("TodoTestingCollection")]
+public class TodoIntegrationCollection : ICollectionFixture<TestingFixture>;
+
 public sealed class TestingFixture : IAsyncLifetime
 {
+    private const string PostgresResourceName = "postgres";
+    private const string PresentationResourceName = "Presentation";
+    private const string DatabaseConnectionName = "todo-db";
+    private const int ResourceStartupTimeoutSeconds = 30;
+    private HttpClient? _client;
     private DistributedApplication? _app;
     private ResourceNotificationService? _notificationService;
-    private HttpClient? _testingClient;
     private string? _connectionString;
-    
+
     public async ValueTask InitializeAsync()
+    {
+        await BuildAndStartAppAsync();
+        if (_app is null)
+            throw new InvalidOperationException("Application has not been initialized");
+        _client = CreateHttpClient();
+        await WaitForResourcesAsync();
+        _connectionString = await _app.GetConnectionStringAsync(DatabaseConnectionName);
+        await InitDbContextAsync();
+    }
+
+    private async Task BuildAndStartAppAsync()
     {
         var builder = await DistributedApplicationTestingBuilder
             .CreateAsync<Projects.AppHost>(
@@ -32,41 +51,50 @@ public sealed class TestingFixture : IAsyncLifetime
         _app = await builder.BuildAsync();
 
         _notificationService = _app.Services.GetService<ResourceNotificationService>();
+        if (_notificationService is null)
+            throw new InvalidOperationException("ResourceNotificationService not available");
 
         await _app.StartAsync();
-        await _notificationService!.WaitForResourceAsync("postgres", KnownResourceStates.Running)
-            .WaitAsync(TimeSpan.FromSeconds(30));
-
-        await _notificationService!.WaitForResourceAsync("Presentation", KnownResourceStates.Running)
-            .WaitAsync(TimeSpan.FromSeconds(30));
-
-        _connectionString = await _app.GetConnectionStringAsync("todo-db");
-        
-        await InitDbContextAsync();
     }
 
+    private async Task WaitForResourcesAsync()
+    {
+        var timeout = TimeSpan.FromSeconds(ResourceStartupTimeoutSeconds);
+
+        await _notificationService!.WaitForResourceAsync(PostgresResourceName, KnownResourceStates.Running)
+            .WaitAsync(timeout);
+
+        await _notificationService!.WaitForResourceAsync(PresentationResourceName, KnownResourceStates.Running)
+            .WaitAsync(timeout);
+    }
     public HttpClient CreateHttpClient()
     {
-        if (_testingClient is not null)
-            return _testingClient;
+        if (_client is not null)
+            return _client;
+        if (_app is null)
+            throw new InvalidOperationException("Application has not been initialized");
 
-        _testingClient = _app!.CreateHttpClient("Presentation");
+        _client = _app.CreateHttpClient(PresentationResourceName);
 
-        return _testingClient;
+        return _client;
     }
 
     private async Task InitDbContextAsync()
     {
-        var optionsBuilder = new DbContextOptionsBuilder<TodoDbContext>();
-        _connectionString = await _app!.GetConnectionStringAsync("todo-db");
-
         if (string.IsNullOrEmpty(_connectionString))
             throw new InvalidOperationException("Connection string not available");
+
+        var optionsBuilder = new DbContextOptionsBuilder<TodoDbContext>();
         optionsBuilder.UseNpgsql(_connectionString);
 
         var dbContext = new TodoDbContext(optionsBuilder.Options);
         await dbContext.Database.MigrateAsync();
 
+        await SeedTestTodoAsync(dbContext);
+    }
+
+    private static async Task SeedTestTodoAsync(TodoDbContext dbContext)
+    {
         var todo = new Todo(
             id: 925,
             title: "Test Todo from Integration Test",

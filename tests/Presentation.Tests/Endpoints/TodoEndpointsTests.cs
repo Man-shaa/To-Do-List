@@ -4,6 +4,7 @@ using Presentation.Tests.fixture;
 
 namespace Presentation.Tests.Endpoints;
 
+[Collection("TodoTestingCollection")]
 public sealed class TodoEndpointsTests(TestingFixture fixture) : IClassFixture<TestingFixture>
 {
     [Fact]
