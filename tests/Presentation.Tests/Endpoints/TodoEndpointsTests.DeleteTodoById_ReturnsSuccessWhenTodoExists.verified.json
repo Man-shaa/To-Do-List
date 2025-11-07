@@ -1,0 +1,12 @@
+﻿{
+  "StatusCode": "OK",
+  "Content": {
+    "Headers": [
+      {
+        "Content-Length": [
+          "0"
+        ]
+      }
+    ]
+  }
+}
