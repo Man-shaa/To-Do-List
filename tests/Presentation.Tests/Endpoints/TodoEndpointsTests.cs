@@ -1,8 +1,6 @@
 using System.Net.Http.Json;
 using Domain.Entities;
-using Infrastructure.Repositories.DTOs;
 using Presentation.Tests.fixture;
-using Xunit;
 
 namespace Presentation.Tests.Endpoints;
 
@@ -11,10 +9,15 @@ public sealed class TodoEndpointsTests(TestingFixture fixture) : IClassFixture<T
     [Fact]
     public async Task GetAllTodos_ReturnsSuccess()
     {
-        var client = await fixture.CreateHttpClient();
-        
-        var response = await client.GetAsync("/todos");
+        var client = fixture.CreateHttpClient();
+        var sut = await client.GetAsync("/todos");
 
-        await Verify(response);
+        var content = await sut.Content.ReadFromJsonAsync<List<Todo>>();
+
+        await Verify(new 
+        {
+            StatusCode = sut.StatusCode,
+            Content = content
+        });
     }
 }

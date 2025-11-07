@@ -1,13 +1,25 @@
+using Microsoft.Extensions.Configuration;
 using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
+IResourceBuilder<PostgresDatabaseResource> postgres;
 
-var postgres = builder.AddPostgres("postgres")
-    .WithHostPort(15432)
-    .WithPgWeb()
-    .WithDataVolume()
-    .WithLifetime(ContainerLifetime.Persistent)
-    .AddDatabase("todo-db");
+if (builder.Configuration.GetValue("Testing", false))
+{
+    postgres = builder.AddPostgres("postgres")
+        .WithHostPort(15432)
+        .WithPgWeb()
+        .AddDatabase("todo-db");
+}
+else
+{
+    postgres = builder.AddPostgres("postgres")
+        .WithHostPort(15432)
+        .WithPgWeb()
+        .WithDataVolume()
+        .WithLifetime(ContainerLifetime.Persistent)
+        .AddDatabase("todo-db");
+}
 
 builder.AddProject<Presentation>("Presentation")
     .WithEnvironment("SwaggerEnabled", "true")
