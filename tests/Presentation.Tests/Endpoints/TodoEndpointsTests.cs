@@ -50,4 +50,31 @@ public sealed class TodoEndpointsTests(TestingFixture fixture) : IClassFixture<T
             Content = sut.Content.ReadFromJsonAsync<List<Todo>>()
         });
     }
+    
+    [Fact]
+    public async Task GetTodoById_ReturnsTodoOfIdOne()
+    {
+        var client = fixture.CreateHttpClient();
+
+        var sut = await client.GetAsync("/todos/925");
+
+        await Verify(new 
+        {
+            StatusCode = sut.StatusCode,
+            Content = sut.Content.ReadFromJsonAsync<Todo>()
+        });
+    }
+    [Fact]
+    public async Task GetTodoById_ReturnsNotFoundWhenTodoDoesNotExist()
+    {
+        var client = fixture.CreateHttpClient();
+
+        var sut = await client.GetAsync("/todos/9999");
+
+        await Verify(new 
+        {
+            StatusCode = sut.StatusCode,
+            sut.Content
+        });
+    }
 }
