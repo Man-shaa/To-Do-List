@@ -23,7 +23,7 @@ public sealed class TodoEndpointsTests(TestingFixture fixture) : IClassFixture<T
     }
     
     [Fact]
-    public async Task CreateTodo_ShouldReturnBadRequestWhenTitleIsEmpty()
+    public async Task CreateTodo_ReturnBadRequestWhenTitleIsEmpty()
     {
         var client = fixture.CreateHttpClient();
         var testTodo = new { Title = "", Order = 1, Completed = false };
@@ -42,6 +42,9 @@ public sealed class TodoEndpointsTests(TestingFixture fixture) : IClassFixture<T
     {
         var client = fixture.CreateHttpClient();
 
+        await client.PostAsJsonAsync("/todos", new { Title = "A", Order = 1, Completed = false });
+        await client.PostAsJsonAsync("/todos", new { Title = "B", Order = 2, Completed = false });
+        
         var sut = await client.GetAsync("/todos");
 
         await Verify(new 
@@ -56,7 +59,10 @@ public sealed class TodoEndpointsTests(TestingFixture fixture) : IClassFixture<T
     {
         var client = fixture.CreateHttpClient();
 
-        var sut = await client.GetAsync("/todos/925");
+        var created = await (await client.PostAsJsonAsync("/todos", new { Title = "X", Order = 1, Completed = false }))
+            .Content.ReadFromJsonAsync<Todo>();
+
+        var sut = await client.GetAsync($"/todos/{created!.Id}");
 
         await Verify(new 
         {
@@ -72,11 +78,8 @@ public sealed class TodoEndpointsTests(TestingFixture fixture) : IClassFixture<T
 
         var sut = await client.GetAsync("/todos/9999");
 
-        await Verify(new 
-        {
-            StatusCode = sut.StatusCode,
-            sut.Content
-        });
+        await Verify(sut);
+        
     }
 
     [Fact]
@@ -84,25 +87,30 @@ public sealed class TodoEndpointsTests(TestingFixture fixture) : IClassFixture<T
     {
         var client = fixture.CreateHttpClient();
 
-        var sut = await client.DeleteAsync("/todos/925");
+        var created = await (await client.PostAsJsonAsync("/todos", new { Title = "X", Order = 1, Completed = false }))
+            .Content.ReadFromJsonAsync<Todo>();
+        var sut = await client.DeleteAsync($"/todos/{created!.Id}");
 
-        await Verify(new 
-        {
-            StatusCode = sut.StatusCode,
-            sut.Content
-        });
+        await Verify(sut);
+        
     }
     [Fact]
     public async Task DeleteTodoById_ReturnsNotFoundWhenTodoDoesNotExists()
     {
         var client = fixture.CreateHttpClient();
 
-        var sut = await client.DeleteAsync("/todos/999");
+        var sut = await client.DeleteAsync("/todos/9999");
 
-        await Verify(new 
-        {
-            StatusCode = sut.StatusCode,
-            sut.Content
-        });
+        await Verify(sut);
+    }
+    
+    [Fact]
+    public async Task DeleteAllTodos_ReturnsSuccess()
+    {
+        var client = fixture.CreateHttpClient();
+        
+        var sut = await client.DeleteAsync("/todos/");
+    
+        await Verify(sut);
     }
 }

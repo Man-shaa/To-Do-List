@@ -9,7 +9,7 @@ public static class ModuleInitializer
     {
         VerifyDiffPlex.Initialize();
         VerifierSettings.InitializePlugins();
-        VerifierSettings.ScrubMembers("Date", "RequestUri");
+        VerifierSettings.ScrubMembers("Date", "RequestUri", "Id", "Url");
         VerifierSettings.DontScrubDateTimes();
         VerifierSettings.UseStrictJson();
     }

@@ -90,7 +90,7 @@ public sealed class TestingFixture : IAsyncLifetime
         var dbContext = new TodoDbContext(optionsBuilder.Options);
         await dbContext.Database.MigrateAsync();
 
-        await SeedTestTodoAsync(dbContext);
+        // await SeedTestTodoAsync(dbContext);
     }
 
     private static async Task SeedTestTodoAsync(TodoDbContext dbContext)

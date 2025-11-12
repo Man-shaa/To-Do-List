@@ -1,5 +1,5 @@
 ﻿{
-  "StatusCode": "NotFound",
+  "Version": "1.1",
   "Content": {
     "Headers": [
       {
@@ -8,5 +8,30 @@
         ]
       }
     ]
-  }
+  },
+  "StatusCode": "NotFound",
+  "ReasonPhrase": "Not Found",
+  "Headers": [
+    {
+      "Date": "Scrubbed"
+    },
+    {
+      "Server": [
+        "Kestrel"
+      ]
+    }
+  ],
+  "TrailingHeaders": [],
+  "RequestMessage": {
+    "Version": "1.1",
+    "Method": {
+      "Method": "DELETE"
+    },
+    "RequestUri": "{Scrubbed}",
+    "Headers": [],
+    "Options": {
+      "Resilience.Http.ResilienceContext": null
+    }
+  },
+  "IsSuccessStatusCode": false
 }
