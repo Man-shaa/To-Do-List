@@ -88,7 +88,6 @@ public sealed class TestingFixture : IAsyncLifetime
         optionsBuilder.UseNpgsql(_connectionString);
 
         var dbContext = new TodoDbContext(optionsBuilder.Options);
-        await dbContext.Database.MigrateAsync();
 
         // await SeedTestTodoAsync(dbContext);
     }

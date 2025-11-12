@@ -55,7 +55,7 @@ public static class TodoEndpoints
     {
         var todo = await sender.Send(new CreateTodoCommand(dto));
 
-        return Results.Ok(todo);
+        return Results.Created(todo.Url, todo);
     }
 
     private static async Task<IResult> UpdateTodoByIdAsync(int id, HttpRequest request, ISender sender)

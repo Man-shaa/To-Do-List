@@ -18,10 +18,12 @@ public sealed class TodoEndpointsTests(TestingFixture fixture) : IClassFixture<T
 
         var sut = await client.PostAsJsonAsync("/todos", testTodo);
 
+        var content = await sut.Content.ReadFromJsonAsync<Todo>();
+        Assert.Equal(System.Net.HttpStatusCode.Created, sut.StatusCode);
         await Verify(new
         {
             StatusCode = sut.StatusCode,
-            Content = await sut.Content.ReadFromJsonAsync<Todo>()
+            Content = content
         });
     }
     
@@ -33,6 +35,7 @@ public sealed class TodoEndpointsTests(TestingFixture fixture) : IClassFixture<T
 
         var sut = await client.PostAsJsonAsync("/todos", testTodo);
 
+        Assert.Equal(System.Net.HttpStatusCode.BadRequest, sut.StatusCode);
         await Verify(sut);
     }
     
@@ -46,10 +49,12 @@ public sealed class TodoEndpointsTests(TestingFixture fixture) : IClassFixture<T
         
         var sut = await client.GetAsync("/todos");
 
+        var content = sut.Content.ReadFromJsonAsync<List<Todo>>();
+        Assert.Equal(System.Net.HttpStatusCode.OK, sut.StatusCode);
         await Verify(new 
         {
             StatusCode = sut.StatusCode,
-            Content = sut.Content.ReadFromJsonAsync<List<Todo>>()
+            Content = content
         });
     }
     
@@ -63,10 +68,12 @@ public sealed class TodoEndpointsTests(TestingFixture fixture) : IClassFixture<T
 
         var sut = await client.GetAsync($"/todos/{created!.Id}");
 
+        var content = sut.Content.ReadFromJsonAsync<Todo>();
+        Assert.Equal(System.Net.HttpStatusCode.OK, sut.StatusCode);
         await Verify(new 
         {
             StatusCode = sut.StatusCode,
-            Content = sut.Content.ReadFromJsonAsync<Todo>()
+            Content = content
         });
     }
     
@@ -77,8 +84,8 @@ public sealed class TodoEndpointsTests(TestingFixture fixture) : IClassFixture<T
 
         var sut = await client.GetAsync("/todos/9999");
 
+        Assert.Equal(System.Net.HttpStatusCode.NotFound, sut.StatusCode);
         await Verify(sut);
-        
     }
 
     [Fact]
@@ -90,6 +97,7 @@ public sealed class TodoEndpointsTests(TestingFixture fixture) : IClassFixture<T
             .Content.ReadFromJsonAsync<Todo>();
         var sut = await client.DeleteAsync($"/todos/{created!.Id}");
 
+        Assert.Equal(System.Net.HttpStatusCode.OK, sut.StatusCode);
         await Verify(sut);
         
     }
@@ -100,6 +108,7 @@ public sealed class TodoEndpointsTests(TestingFixture fixture) : IClassFixture<T
 
         var sut = await client.DeleteAsync("/todos/9999");
 
+        Assert.Equal(System.Net.HttpStatusCode.NotFound, sut.StatusCode);
         await Verify(sut);
     }
     
@@ -110,6 +119,7 @@ public sealed class TodoEndpointsTests(TestingFixture fixture) : IClassFixture<T
         
         var sut = await client.DeleteAsync("/todos/");
     
+        Assert.Equal(System.Net.HttpStatusCode.OK, sut.StatusCode);
         await Verify(sut);
     }
 }

@@ -1,5 +1,5 @@
 ﻿{
-  "StatusCode": "OK",
+  "StatusCode": "Created",
   "Content": {
     "Id": "{Scrubbed}",
     "Title": "Test Todo",
