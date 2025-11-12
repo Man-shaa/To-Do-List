@@ -4,6 +4,9 @@ using Presentation.Tests.fixture;
 
 namespace Presentation.Tests.Endpoints;
 
+[CollectionDefinition("TodoTestingCollection", DisableParallelization = true)]
+public class TodoIntegrationCollection : ICollectionFixture<TestingFixture>;
+
 [Collection("TodoTestingCollection")]
 public sealed class TodoEndpointsTests(TestingFixture fixture) : IClassFixture<TestingFixture>
 {
@@ -30,11 +33,7 @@ public sealed class TodoEndpointsTests(TestingFixture fixture) : IClassFixture<T
 
         var sut = await client.PostAsJsonAsync("/todos", testTodo);
 
-        await Verify(new
-        {
-            StatusCode = sut.StatusCode,
-            Content = await sut.Content.ReadFromJsonAsync<Todo>()
-        });
+        await Verify(sut);
     }
     
     [Fact]

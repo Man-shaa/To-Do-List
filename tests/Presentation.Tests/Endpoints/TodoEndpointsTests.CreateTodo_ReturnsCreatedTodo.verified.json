@@ -1,9 +1,9 @@
 ﻿{
   "StatusCode": "OK",
   "Content": {
-    "Id": 1,
+    "Id": "{Scrubbed}",
     "Title": "Test Todo",
-    "Url": "https://localhost:7214/todos/1",
+    "Url": "{Scrubbed}",
     "Completed": false,
     "Order": 1
   }

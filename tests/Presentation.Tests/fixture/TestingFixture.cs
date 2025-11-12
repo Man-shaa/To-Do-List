@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Presentation.Tests.fixture;
 
-[CollectionDefinition("TodoTestingCollection")]
+[CollectionDefinition("TodoTestingCollection", DisableParallelization = true)]
 public class TodoIntegrationCollection : ICollectionFixture<TestingFixture>;
 
 public sealed class TestingFixture : IAsyncLifetime

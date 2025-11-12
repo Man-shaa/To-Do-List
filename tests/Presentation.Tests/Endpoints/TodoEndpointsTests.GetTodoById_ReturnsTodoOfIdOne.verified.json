@@ -3,9 +3,9 @@
   "Content": {
     "Status": "RanToCompletion",
     "Result": {
-      "Id": 925,
-      "Title": "Test Todo from Integration Test",
-      "Url": "https://localhost:7214/todos/925",
+      "Id": "{Scrubbed}",
+      "Title": "X",
+      "Url": "{Scrubbed}",
       "Completed": false,
       "Order": 1
     }
