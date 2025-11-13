@@ -10,8 +10,6 @@ public static class DependencyInjection
 {
     public static IHostApplicationBuilder AddPresentation(this IHostApplicationBuilder builder)
     {
-        builder.Services.AddScoped<TodoService>();
-
         builder.Services.AddControllers(options =>
             {
                 options.InputFormatters.RemoveType<SystemTextJsonInputFormatter>();
