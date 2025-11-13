@@ -1,0 +1,10 @@
+﻿{
+  "IsValid": false,
+  "Errors": [
+    {
+      "PropertyName": "Todo.Title",
+      "ErrorCode": "NotNullValidator",
+      "ErrorMessage": "Title field required"
+    }
+  ]
+}

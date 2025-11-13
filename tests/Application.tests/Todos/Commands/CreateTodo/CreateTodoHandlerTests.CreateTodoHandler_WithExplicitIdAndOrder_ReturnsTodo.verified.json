@@ -1,0 +1,7 @@
+﻿{
+  "Id": 1,
+  "Title": "Snapshot Title",
+  "Url": "https://localhost:7214/todos/1",
+  "Completed": false,
+  "Order": 1
+}

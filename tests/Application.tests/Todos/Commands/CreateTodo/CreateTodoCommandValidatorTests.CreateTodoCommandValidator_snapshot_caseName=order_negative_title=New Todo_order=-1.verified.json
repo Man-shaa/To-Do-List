@@ -1,0 +1,10 @@
+﻿{
+  "IsValid": false,
+  "Errors": [
+    {
+      "PropertyName": "Todo.Order",
+      "ErrorCode": "GreaterThanOrEqualValidator",
+      "ErrorMessage": "Order must be positive when provided"
+    }
+  ]
+}

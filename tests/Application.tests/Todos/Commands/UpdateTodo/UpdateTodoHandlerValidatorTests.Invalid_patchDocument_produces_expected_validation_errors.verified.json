@@ -1,0 +1,18 @@
+﻿[
+  {
+    "PropertyName": "PatchDocument",
+    "ErrorMessage": "Each operation must have a non-empty 'path'."
+  },
+  {
+    "PropertyName": "PatchDocument",
+    "ErrorMessage": "Only 'replace' operations are permitted."
+  },
+  {
+    "PropertyName": "PatchDocument",
+    "ErrorMessage": "The target location specified by path segment '' was not found."
+  },
+  {
+    "PropertyName": "PatchDocument",
+    "ErrorMessage": "Value field required."
+  }
+]

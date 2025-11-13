@@ -1,0 +1,10 @@
+﻿{
+  "IsValid": false,
+  "Errors": [
+    {
+      "PropertyName": "Todo.Title",
+      "ErrorCode": "NotEmptyValidator",
+      "ErrorMessage": "Title must not be empty"
+    }
+  ]
+}
