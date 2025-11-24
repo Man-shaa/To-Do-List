@@ -10,6 +10,10 @@ namespace Application.Tests.Todos.Commands.UpdateTodo;
 
 public sealed class UpdateTodoHandlerTests
 {
+    private static Todo MakeTodo(int id = 1, string title = "Title", string url = "https://localhost/todos/1",
+        int order = 1) =>
+        new(id: id, title: title, url: new Uri(url), order: order);
+
     [Fact]
     public async Task UpdateTodoHandler_WithValidReplaceTitle_ReturnsUpdatedTodo()
     {
@@ -29,9 +33,7 @@ public sealed class UpdateTodoHandlerTests
 
         await Verify(sut);
     }
-    private static Todo MakeTodo(int id = 1, string title = "Title", string url = "https://localhost/todos/1", int order = 1)
-        => new Todo(id: id, title: title, url: new Uri(url), order: order);
-
+    
     [Fact]
     public async Task Handle_should_apply_patch_and_return_same_instance()
     {
@@ -44,10 +46,10 @@ public sealed class UpdateTodoHandlerTests
         patch.Replace(t => t.Title, "Updated Title");
 
         var handler = new UpdateTodoHandler(todoDbContextMock.Object);
-        var result = await handler.Handle(new UpdateTodoCommand(todo, patch), CancellationToken.None);
+        var sut = await handler.Handle(new UpdateTodoCommand(todo, patch), CancellationToken.None);
 
-        Assert.Same(todo, result);
-        Assert.Equal("Updated Title", result.Title);
+        Assert.Same(todo, sut);
+        Assert.Equal("Updated Title", sut.Title);
     }
 
     [Fact]
@@ -64,10 +66,10 @@ public sealed class UpdateTodoHandlerTests
         patch.Replace(t => t.Order, 7);
 
         var handler = new UpdateTodoHandler(todoDbContextMock.Object);
-        var result = await handler.Handle(new UpdateTodoCommand(todo, patch), CancellationToken.None);
+        var sut = await handler.Handle(new UpdateTodoCommand(todo, patch), CancellationToken.None);
 
-        Assert.Equal("New Title", result.Title);
-        Assert.Equal(7, result.Order);
+        Assert.Equal("New Title", sut.Title);
+        Assert.Equal(7, sut.Order);
     }
 
     [Fact]
@@ -81,11 +83,11 @@ public sealed class UpdateTodoHandlerTests
         var patch = new JsonPatchDocument<Todo>();
 
         var handler = new UpdateTodoHandler(todoDbContextMock.Object);
-        var result = await handler.Handle(new UpdateTodoCommand(todo, patch), CancellationToken.None);
+        var sut = await handler.Handle(new UpdateTodoCommand(todo, patch), CancellationToken.None);
 
-        Assert.Equal("Original", result.Title);
-        Assert.Equal(5, result.Order);
-        Assert.Same(todo, result);
+        Assert.Equal("Original", sut.Title);
+        Assert.Equal(5, sut.Order);
+        Assert.Same(todo, sut);
     }
 
     [Fact]
@@ -99,10 +101,10 @@ public sealed class UpdateTodoHandlerTests
         var patch = new JsonPatchDocument<Todo>();
         patch.Operations.Add(new Operation<Todo>("replace", "/DoesNotExist", from: null, value: "X"));
 
-        var handler = new UpdateTodoHandler(todoDbContextMock.Object);
+        var sut = new UpdateTodoHandler(todoDbContextMock.Object);
 
         await Assert.ThrowsAsync<JsonPatchException>(() =>
-            handler.Handle(new UpdateTodoCommand(todo, patch), CancellationToken.None));
+            sut.Handle(new UpdateTodoCommand(todo, patch), CancellationToken.None));
     }
 
     [Fact]
@@ -116,9 +118,9 @@ public sealed class UpdateTodoHandlerTests
         var patch = new JsonPatchDocument<Todo>();
         patch.Operations.Add(new Operation<Todo>("replace", "/Order", from: null, value: "not-a-number"));
 
-        var handler = new UpdateTodoHandler(todoDbContextMock.Object);
+        var sut = new UpdateTodoHandler(todoDbContextMock.Object);
 
         await Assert.ThrowsAsync<JsonPatchException>(() =>
-            handler.Handle(new UpdateTodoCommand(todo, patch), CancellationToken.None));
+            sut.Handle(new UpdateTodoCommand(todo, patch), CancellationToken.None));
     }
 }

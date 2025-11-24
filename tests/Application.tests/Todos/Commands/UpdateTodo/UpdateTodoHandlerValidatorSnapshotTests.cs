@@ -43,9 +43,9 @@ public sealed class UpdateTodoHandlerValidatorTests
     {
         var validator = new UpdateTodoCommandValidator();
 
-        var result = validator.TestValidate(new UpdateTodoCommand(MakeTodo(), null!));
+        var sut = validator.TestValidate(new UpdateTodoCommand(MakeTodo(), null!));
 
-        result.ShouldHaveValidationErrorFor(x => x.PatchDocument)
+        sut.ShouldHaveValidationErrorFor(x => x.PatchDocument)
             .WithErrorMessage("PatchDocument is required.");
     }
 
@@ -55,9 +55,9 @@ public sealed class UpdateTodoHandlerValidatorTests
         var patch = new JsonPatchDocument<Todo>();
         var validator = new UpdateTodoCommandValidator();
 
-        var result = validator.TestValidate(MakeCommand(patch));
+        var sut = validator.TestValidate(MakeCommand(patch));
 
-        result.ShouldHaveValidationErrorFor(x => x.PatchDocument.Operations)
+        sut.ShouldHaveValidationErrorFor(x => x.PatchDocument.Operations)
             .WithErrorMessage("PatchDocument must have at least one operation.");
     }
     
@@ -68,9 +68,9 @@ public sealed class UpdateTodoHandlerValidatorTests
         patch.Operations.Add(new Operation<Todo>("add", "/Title", from: null, value: "X"));
 
         var validator = new UpdateTodoCommandValidator();
-        var result = validator.TestValidate(MakeCommand(patch));
+        var sut = validator.TestValidate(MakeCommand(patch));
 
-        result.ShouldHaveValidationErrorFor("PatchDocument")
+        sut.ShouldHaveValidationErrorFor("PatchDocument")
             .WithErrorMessage("Only 'replace' operations are permitted.");
     }
 
@@ -81,9 +81,9 @@ public sealed class UpdateTodoHandlerValidatorTests
         patch.Operations.Add(new Operation<Todo>("replace", path: "", from: null, value: "New Title"));
 
         var validator = new UpdateTodoCommandValidator();
-        var result = validator.TestValidate(MakeCommand(patch));
+        var sut = validator.TestValidate(MakeCommand(patch));
 
-        result.ShouldHaveValidationErrorFor("PatchDocument")
+        sut.ShouldHaveValidationErrorFor("PatchDocument")
             .WithErrorMessage("Each operation must have a non-empty 'path'.");
     }
 
@@ -94,9 +94,9 @@ public sealed class UpdateTodoHandlerValidatorTests
         patch.Operations.Add(new Operation<Todo>("replace", path: "   ", from: null, value: "New Title"));
 
         var validator = new UpdateTodoCommandValidator();
-        var result = validator.TestValidate(MakeCommand(patch));
+        var sut = validator.TestValidate(MakeCommand(patch));
 
-        result.ShouldHaveValidationErrorFor("PatchDocument")
+        sut.ShouldHaveValidationErrorFor("PatchDocument")
             .WithErrorMessage("Each operation must have a non-empty 'path'.");
     }
 
@@ -107,9 +107,9 @@ public sealed class UpdateTodoHandlerValidatorTests
         patch.Operations.Add(new Operation<Todo>("replace", path: "Title", from: null, value: "New Title"));
 
         var validator = new UpdateTodoCommandValidator();
-        var result = validator.TestValidate(MakeCommand(patch));
+        var sut = validator.TestValidate(MakeCommand(patch));
 
-        result.ShouldHaveValidationErrorFor("PatchDocument")
+        sut.ShouldHaveValidationErrorFor("PatchDocument")
             .WithErrorMessage("Path must start with '/'.");
     }
 
@@ -120,9 +120,9 @@ public sealed class UpdateTodoHandlerValidatorTests
         patch.Operations.Add(new Operation<Todo>("replace", path: "/Title", from: null, value: null));
 
         var validator = new UpdateTodoCommandValidator();
-        var result = validator.TestValidate(MakeCommand(patch));
+        var sut = validator.TestValidate(MakeCommand(patch));
 
-        result.ShouldHaveValidationErrorFor("PatchDocument")
+        sut.ShouldHaveValidationErrorFor("PatchDocument")
             .WithErrorMessage("Value field required.");
     }
 
@@ -133,9 +133,9 @@ public sealed class UpdateTodoHandlerValidatorTests
         patch.Replace(t => t.Title, "Updated Title");
 
         var validator = new UpdateTodoCommandValidator();
-        var result = validator.TestValidate(MakeCommand(patch));
+        var sut = validator.TestValidate(MakeCommand(patch));
 
-        result.ShouldNotHaveAnyValidationErrors();
+        sut.ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]
@@ -145,9 +145,9 @@ public sealed class UpdateTodoHandlerValidatorTests
         patch.Replace(t => t.Order, 42);
 
         var validator = new UpdateTodoCommandValidator();
-        var result = validator.TestValidate(MakeCommand(patch));
+        var sut = validator.TestValidate(MakeCommand(patch));
 
-        result.ShouldNotHaveAnyValidationErrors();
+        sut.ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]
@@ -157,9 +157,9 @@ public sealed class UpdateTodoHandlerValidatorTests
         patch.Operations.Add(new Operation<Todo>("replace", "/DoesNotExist", from: null, value: "X"));
 
         var validator = new UpdateTodoCommandValidator();
-        var result = validator.TestValidate(MakeCommand(patch));
+        var sut = validator.TestValidate(MakeCommand(patch));
 
-        result.ShouldHaveValidationErrorFor("PatchDocument");
+        sut.ShouldHaveValidationErrorFor("PatchDocument");
     }
 
     [Fact]
@@ -169,9 +169,9 @@ public sealed class UpdateTodoHandlerValidatorTests
         patch.Operations.Add(new Operation<Todo>("replace", "/Order", from: null, value: "not-a-number"));
 
         var validator = new UpdateTodoCommandValidator();
-        var result = validator.TestValidate(MakeCommand(patch));
+        var sut = validator.TestValidate(MakeCommand(patch));
 
-        result.ShouldHaveValidationErrorFor("PatchDocument");
+        sut.ShouldHaveValidationErrorFor("PatchDocument");
     }
 
     [Fact]
@@ -181,9 +181,9 @@ public sealed class UpdateTodoHandlerValidatorTests
         patch.Operations.Add(new Operation<Todo>("replace", "/Title/Sub", from: null, value: "X"));
 
         var validator = new UpdateTodoCommandValidator();
-        var result = validator.TestValidate(MakeCommand(patch));
+        var sut = validator.TestValidate(MakeCommand(patch));
 
-        result.ShouldHaveValidationErrorFor("PatchDocument");
+        sut.ShouldHaveValidationErrorFor("PatchDocument");
     }
 
     [Fact]
@@ -200,11 +200,11 @@ public sealed class UpdateTodoHandlerValidatorTests
         patch.Operations.Add(new Operation<Todo>("replace", path: "/Title", from: null, value: null));
 
         var validator = new UpdateTodoCommandValidator();
-        var result = validator.TestValidate(MakeCommand(patch));
+        var sut = validator.TestValidate(MakeCommand(patch));
 
-        result.ShouldHaveValidationErrorFor("PatchDocument").WithErrorMessage("Only 'replace' operations are permitted.");
-        result.ShouldHaveValidationErrorFor("PatchDocument").WithErrorMessage("Each operation must have a non-empty 'path'.");
-        result.ShouldHaveValidationErrorFor("PatchDocument").WithErrorMessage("Path must start with '/'.");
-        result.ShouldHaveValidationErrorFor("PatchDocument").WithErrorMessage("Value field required.");
+        sut.ShouldHaveValidationErrorFor("PatchDocument").WithErrorMessage("Only 'replace' operations are permitted.");
+        sut.ShouldHaveValidationErrorFor("PatchDocument").WithErrorMessage("Each operation must have a non-empty 'path'.");
+        sut.ShouldHaveValidationErrorFor("PatchDocument").WithErrorMessage("Path must start with '/'.");
+        sut.ShouldHaveValidationErrorFor("PatchDocument").WithErrorMessage("Value field required.");
     }
 }

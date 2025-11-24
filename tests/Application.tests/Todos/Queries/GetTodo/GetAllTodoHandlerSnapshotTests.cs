@@ -55,9 +55,9 @@ public sealed class GetAllTodoQueryTests
             .ReturnsAsync(expectedTodoList);
 
         var handler = new GetAllTodoHandler(todoDbContext.Object);
-        var returnedTodoList = await handler.Handle(new GetAllTodoQuery(), CancellationToken.None);
+        var sut = await handler.Handle(new GetAllTodoQuery(), CancellationToken.None);
 
-        Assert.Same(expectedTodoList, returnedTodoList);
+        Assert.Same(expectedTodoList, sut);
         todoDbContext.Verify(s => s.GetAllAsync(CancellationToken.None), Times.Once);
         todoDbContext.VerifyNoOtherCalls();
     }
@@ -76,10 +76,10 @@ public sealed class GetAllTodoQueryTests
         var handler = new GetAllTodoHandler(todoDbContext.Object);
 
 
-        var result = await handler.Handle(new GetAllTodoQuery(), ct);
+        var sut = await handler.Handle(new GetAllTodoQuery(), ct);
 
 
-        Assert.Empty(result);
+        Assert.Empty(sut);
         todoDbContext.Verify(s => s.GetAllAsync(ct), Times.Once);
         todoDbContext.VerifyNoOtherCalls();
     }

@@ -56,9 +56,9 @@ public sealed class GetTodoByIdQueryTests
 
         var handler = new GetTodoByIdHandler(todoDbContext.Object);
 
-        var result = await handler.Handle(new GetTodoByIdQuery(id), ct);
+        var sut = await handler.Handle(new GetTodoByIdQuery(id), ct);
 
-        Assert.Same(expected, result);
+        Assert.Same(expected, sut);
         todoDbContext.Verify(s => s.GetByIdAsync(id, ct), Times.Once);
         todoDbContext.VerifyNoOtherCalls();
     }
@@ -76,9 +76,9 @@ public sealed class GetTodoByIdQueryTests
 
         var handler = new GetTodoByIdHandler(todoDbContext.Object);
 
-        var result = await handler.Handle(new GetTodoByIdQuery(id), ct);
+        var sut = await handler.Handle(new GetTodoByIdQuery(id), ct);
 
-        Assert.Null(result);
+        Assert.Null(sut);
         todoDbContext.Verify(s => s.GetByIdAsync(id, ct), Times.Once);
         todoDbContext.VerifyNoOtherCalls();
     }

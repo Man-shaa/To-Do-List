@@ -25,9 +25,9 @@ namespace Application.Tests.Todos.Commands.DeleteTodo
 
             var handler = new DeleteTodoByIdHandler(todoDbContextMock.Object);
 
-            var result = await handler.Handle(new DeleteTodoCommand(id), token);
+            var sut = await handler.Handle(new DeleteTodoCommand(id), token);
 
-            Assert.True(result);
+            Assert.True(sut);
             todoDbContextMock.Verify(s => s.GetByIdAsync(id, It.Is<CancellationToken>(t => t == token)), Times.Once);
             todoDbContextMock.Verify(s => s.DeleteByIdAsync(It.Is<Todo>(x => ReferenceEquals(x, todo)), It.Is<CancellationToken>(t => t == token)), Times.Once);
             todoDbContextMock.VerifyNoOtherCalls();
@@ -45,9 +45,9 @@ namespace Application.Tests.Todos.Commands.DeleteTodo
 
             var handler = new DeleteTodoByIdHandler(todoDbContextMock.Object);
 
-            var result = await handler.Handle(new DeleteTodoCommand(id), token);
+            var sut = await handler.Handle(new DeleteTodoCommand(id), token);
 
-            Assert.False(result);
+            Assert.False(sut);
             todoDbContextMock.Verify(s => s.GetByIdAsync(id, It.Is<CancellationToken>(t => t == token)), Times.Once);
             todoDbContextMock.Verify(s => s.DeleteByIdAsync(It.Is<Todo?>(x => x == null), It.Is<CancellationToken>(t => t == token)), Times.Once);
             todoDbContextMock.VerifyNoOtherCalls();
@@ -62,10 +62,10 @@ namespace Application.Tests.Todos.Commands.DeleteTodo
             var todoDbContextMock = new Mock<ITodoRepository>(MockBehavior.Strict);
             todoDbContextMock.Setup(s => s.GetByIdAsync(id, token)).ThrowsAsync(new InvalidOperationException("boom"));
 
-            var handler = new DeleteTodoByIdHandler(todoDbContextMock.Object);
+            var sut = new DeleteTodoByIdHandler(todoDbContextMock.Object);
 
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                handler.Handle(new DeleteTodoCommand(id), token));
+                sut.Handle(new DeleteTodoCommand(id), token));
 
             todoDbContextMock.Verify(s => s.GetByIdAsync(id, It.Is<CancellationToken>(t => t == token)), Times.Once);
             todoDbContextMock.VerifyNoOtherCalls();
@@ -82,10 +82,10 @@ namespace Application.Tests.Todos.Commands.DeleteTodo
             todoDbContextMock.Setup(s => s.GetByIdAsync(id, token)).ReturnsAsync(todo);
             todoDbContextMock.Setup(s => s.DeleteByIdAsync(todo, token)).ThrowsAsync(new InvalidOperationException("delete failed"));
 
-            var handler = new DeleteTodoByIdHandler(todoDbContextMock.Object);
+            var sut = new DeleteTodoByIdHandler(todoDbContextMock.Object);
 
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                handler.Handle(new DeleteTodoCommand(id), token));
+                sut.Handle(new DeleteTodoCommand(id), token));
 
             todoDbContextMock.Verify(s => s.GetByIdAsync(id, It.Is<CancellationToken>(t => t == token)), Times.Once);
             todoDbContextMock.Verify(s => s.DeleteByIdAsync(It.Is<Todo>(x => ReferenceEquals(x, todo)), It.Is<CancellationToken>(t => t == token)), Times.Once);

@@ -47,9 +47,9 @@ public sealed class CreateTodoHandlerTests
 
         var createHandler = new CreateTodoHandler(todoDbContext.Object);
 
-        var result = await createHandler.Handle(new CreateTodoCommand(dto), CancellationToken.None);
+        var sut = await createHandler.Handle(new CreateTodoCommand(dto), CancellationToken.None);
 
-        var createdResult = Assert.IsType<Todo>(result);
+        var createdResult = Assert.IsType<Todo>(sut);
         Assert.Same(createdTodo, createdResult);
 
         todoDbContext.Verify(s => s.CreateAsync(dto, It.IsAny<CancellationToken>()), Times.Once);
