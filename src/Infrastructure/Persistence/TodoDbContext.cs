@@ -13,6 +13,7 @@ public class TodoDbContext(DbContextOptions<TodoDbContext> options) : DbContext(
         modelBuilder.Entity<Todo>(entity =>
         {
             entity.HasKey(e => e.Id);
+            entity.Property(t => t.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Title).IsRequired();
             entity.Property(e => e.Url).IsRequired();
             entity.Property(e => e.Completed).HasDefaultValue(false);
