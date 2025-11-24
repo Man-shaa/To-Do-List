@@ -8,7 +8,6 @@ namespace Infrastructure.Repositories;
 
 public sealed class TodoRepository(IOptions<SettingsOptions> options, Persistence.TodoDbContext dbContext) : ITodoRepository
 {
-    private static int      	s_todoId = 1;
     private readonly Uri	    _baseUrl = options.Value.BaseUrl;
 
     public async Task<List<Todo>> GetAllAsync(CancellationToken ct)
@@ -24,16 +23,22 @@ public sealed class TodoRepository(IOptions<SettingsOptions> options, Persistenc
     public async Task<Todo> CreateAsync(TodoCreateDto dto, CancellationToken ct)
     {
         var todo = new Todo(
-            id: s_todoId,
+            id: 0,
             title: dto.Title ?? "default title",
-            url: new Uri($"{_baseUrl}todos/{s_todoId}"),
-            order: dto.Order ?? (s_todoId)
+            url: new Uri($"{_baseUrl}todos/0"),
+            order: dto.Order ?? 2
         );
 
-        s_todoId++;
 
         dbContext.Todos.Add(todo);
         await dbContext.SaveChangesAsync(ct);
+
+        todo.Url = new Uri($"{_baseUrl}todos/{todo.Id}");
+        todo.Order = dto.Order ?? todo.Id;
+
+        dbContext.Todos.Update(todo);
+        await dbContext.SaveChangesAsync(ct);
+        
         return await Task.FromResult(todo);
     }
     
