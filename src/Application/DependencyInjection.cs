@@ -1,3 +1,4 @@
+using System.Reflection;
 using Application.Common.Behaviors;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -14,7 +15,7 @@ public static  class DependencyInjection
         builder.Services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly, includeInternalTypes: true);
         builder.Services.AddFluentValidationClientsideAdapters();
 
-        builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<AssemblyMarker>());
+        builder.Services.AddMediatR(cfg => { cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()); });
         builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
         return builder;

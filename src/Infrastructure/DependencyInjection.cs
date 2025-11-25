@@ -12,7 +12,6 @@ public static class DependencyInjection
     public static IHostApplicationBuilder AddInfrastructure(this IHostApplicationBuilder builder)
     {
         AddTodoDbContext(builder);
-
         
         builder.Services.AddOptions<SettingsOptions>()
             .BindConfiguration(SettingsOptions.ConfigurationSectionName)

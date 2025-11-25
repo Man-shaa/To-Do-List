@@ -3,14 +3,14 @@
     "Id": 1,
     "Title": "A",
     "Url": "https://localhost:7214/todos/1",
-    "Completed": false,
+    "IsCompleted": false,
     "Order": 1
   },
   {
     "Id": 2,
     "Title": "B",
     "Url": "https://localhost:7214/todos/2",
-    "Completed": false,
+    "IsCompleted": false,
     "Order": 2
   }
 ]

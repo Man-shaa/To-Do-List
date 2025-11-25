@@ -16,7 +16,7 @@ public class TodoDbContext(DbContextOptions<TodoDbContext> options) : DbContext(
             entity.Property(t => t.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Title).IsRequired();
             entity.Property(e => e.Url).IsRequired();
-            entity.Property(e => e.Completed).HasDefaultValue(false);
+            entity.Property(e => e.IsCompleted).HasDefaultValue(false);
         });
     }
 }

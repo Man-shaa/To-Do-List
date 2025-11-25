@@ -8,8 +8,4 @@
         <AssemblyName>Domain</AssemblyName>
     </PropertyGroup>
 
-    <ItemGroup>
-      <Folder Include="Interfaces\" />
-    </ItemGroup>
-
 </Project>

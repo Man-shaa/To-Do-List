@@ -8,11 +8,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Infrastructure.Migrations
+namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(TodoDbContext))]
-    [Migration("20251112105231_DescribeEntityTodo")]
-    partial class DescribeEntityTodo
+    [Migration("20251124130256_MakeTodoIdIdentity")]
+    partial class MakeTodoIdIdentity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

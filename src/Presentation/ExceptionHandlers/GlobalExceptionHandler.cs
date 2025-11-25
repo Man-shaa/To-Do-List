@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.ExceptionHandlers;
 
-public sealed class ExceptionHandlingMiddleware(RequestDelegate next, IEnumerable<IExceptionHandler> handlers)
+public sealed class GlobalExceptionHandler(RequestDelegate next, IEnumerable<IExceptionHandler> handlers)
 {
     public async Task InvokeAsync(HttpContext context)
     {
