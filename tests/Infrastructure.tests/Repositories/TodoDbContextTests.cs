@@ -5,7 +5,6 @@ using Infrastructure.Repositories.Configurations;
 using Infrastructure.Repositories.DTOs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using NetTopologySuite.Utilities;
 
 namespace Infrastructure.Tests.Repositories;
 

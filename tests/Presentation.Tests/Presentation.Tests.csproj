@@ -5,13 +5,19 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
+        <IsPublishable>false</IsPublishable>
+        <IsTestProject>true</IsTestProject>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Aspire.Hosting" Version="9.5.2" />
+        <PackageReference Include="Aspire.Hosting.AppHost" Version="9.5.2" />
+        <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.5.2" />
         <PackageReference Include="Aspire.Hosting.Testing" Version="9.5.2" />
         <PackageReference Include="coverlet.collector" Version="6.0.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.11" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+        <PackageReference Include="Respawn" Version="6.2.1" />
         <PackageReference Include="Verify.DiffPlex" Version="3.1.2" />
         <PackageReference Include="Verify.XunitV3" Version="31.0.2" />
         <PackageReference Include="xunit.assert" Version="2.9.2" />
@@ -22,9 +28,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\AppHost\AppHost.csproj" />
-      <ProjectReference Include="..\..\src\Domain\Domain.csproj" />
-      <ProjectReference Include="..\..\src\Infrastructure\Infrastructure.csproj" />
+      <ProjectReference Include="..\..\src\AppHost\AppHost.csproj" />
+      <ProjectReference Include="..\..\src\Presentation\Presentation.csproj" />
     </ItemGroup>
 
 </Project>

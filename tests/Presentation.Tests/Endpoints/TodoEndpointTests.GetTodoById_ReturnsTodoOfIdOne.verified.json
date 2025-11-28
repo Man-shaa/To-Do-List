@@ -1,0 +1,10 @@
+﻿{
+  "StatusCode": "OK",
+  "Content": {
+    "Id": 1,
+    "Title": "X",
+    "Url": "https://localhost:7214/todos/1",
+    "IsCompleted": false,
+    "Order": 1
+  }
+}

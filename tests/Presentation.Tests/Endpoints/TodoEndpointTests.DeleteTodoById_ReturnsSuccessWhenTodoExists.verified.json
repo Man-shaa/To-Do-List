@@ -1,0 +1,19 @@
+﻿{
+  "Version": "1.1",
+  "Content": {
+    "Headers": []
+  },
+  "StatusCode": "OK",
+  "ReasonPhrase": "OK",
+  "Headers": [],
+  "TrailingHeaders": [],
+  "RequestMessage": {
+    "Version": "1.1",
+    "Method": {
+      "Method": "DELETE"
+    },
+    "RequestUri": "http://localhost/todos/2",
+    "Headers": []
+  },
+  "IsSuccessStatusCode": true
+}

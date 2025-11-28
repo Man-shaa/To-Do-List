@@ -15,28 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddPresentation()
     .AddInfrastructure()
-    .AddApplication();
-
-builder.Services.AddOpenTelemetry()
-    .ConfigureResource(resource => resource.AddService(serviceName))
-    .WithMetrics(metrics =>
-    {
-        metrics.AddAspNetCoreInstrumentation()
-            .AddHttpClientInstrumentation();
-
-        metrics.AddOtlpExporter();
-    })
-    .WithTracing(tracing =>
-    {
-        tracing
-            .AddAspNetCoreInstrumentation()
-            .AddHttpClientInstrumentation()
-            .AddEntityFrameworkCoreInstrumentation();
-
-        tracing.AddOtlpExporter();
-    });
-
-builder.Logging.AddOpenTelemetry(logging => logging.AddOtlpExporter());
+    .AddApplication()
+    .AddServiceDefaults();
 
 var app = builder.Build();
 

@@ -1,10 +1,10 @@
 ﻿{
   "StatusCode": "Created",
   "Content": {
-    "Id": "{Scrubbed}",
+    "Id": 3,
     "Title": "Test Todo",
-    "Url": "{Scrubbed}",
-    "Completed": false,
+    "Url": "https://localhost:7214/todos/3",
+    "IsCompleted": false,
     "Order": 1
   }
 }

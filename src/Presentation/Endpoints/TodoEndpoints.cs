@@ -51,14 +51,10 @@ public static class TodoEndpoints
         return Results.Ok(todo);
     }
 
-    private static async Task<IResult> CreateTodoAsync(TodoCreateDto dto, ISender sender, ILogger<Program> logger)
+    private static async Task<IResult> CreateTodoAsync(TodoCreateDto dto, ISender sender)
     {
-        if (dto.Order == 9)
-            logger.LogWarning("Order is 9");
-
         var todo = await sender.Send(new CreateTodoCommand(dto));
 
-        logger.LogInformation("Successfully created {@todo}", todo);
         return Results.Created(todo.Url, todo);
     }
 

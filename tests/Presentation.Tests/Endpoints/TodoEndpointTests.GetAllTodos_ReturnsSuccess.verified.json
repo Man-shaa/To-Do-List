@@ -1,0 +1,22 @@
+﻿{
+  "StatusCode": "OK",
+  "Content": {
+    "Status": "RanToCompletion",
+    "Result": [
+      {
+        "Id": 4,
+        "Title": "A",
+        "Url": "https://localhost:7214/todos/4",
+        "IsCompleted": false,
+        "Order": 1
+      },
+      {
+        "Id": 5,
+        "Title": "B",
+        "Url": "https://localhost:7214/todos/5",
+        "IsCompleted": false,
+        "Order": 2
+      }
+    ]
+  }
+}

@@ -11,21 +11,7 @@
   },
   "StatusCode": "BadRequest",
   "ReasonPhrase": "Bad Request",
-  "Headers": [
-    {
-      "Date": "Scrubbed"
-    },
-    {
-      "Server": [
-        "Kestrel"
-      ]
-    },
-    {
-      "Transfer-Encoding": [
-        "chunked"
-      ]
-    }
-  ],
+  "Headers": [],
   "TrailingHeaders": [],
   "RequestMessage": {
     "Version": "1.1",
@@ -47,17 +33,14 @@
     "Method": {
       "Method": "POST"
     },
-    "RequestUri": "{Scrubbed}",
+    "RequestUri": "http://localhost/todos",
     "Headers": [
       {
         "Transfer-Encoding": [
           "chunked"
         ]
       }
-    ],
-    "Options": {
-      "Resilience.Http.ResilienceContext": null
-    }
+    ]
   },
   "IsSuccessStatusCode": false
 }
