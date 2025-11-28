@@ -1,5 +1,8 @@
 using System.Net.Http.Json;
 using Domain.Entities;
+using Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Presentation.Tests.fixture;
 
 namespace Presentation.Tests.Endpoints;
@@ -11,8 +14,7 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
     public ValueTask InitializeAsync() => fixture.ResetDatabaseAsync();
 
     public ValueTask DisposeAsync() => ValueTask.CompletedTask;
-        
-        
+    
     [Fact]
     public async Task CreateTodo_ReturnsCreatedTodo()
     {
@@ -21,15 +23,23 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
         {
             Title = "Test Todo",
             Order = 1,
-            Completed = false
         };
 
         var sut = await fixture.Client.PostAsJsonAsync("/todos",
             testTodo);
-
         var content = await sut.Content.ReadFromJsonAsync<Todo>();
+
         Assert.Equal(System.Net.HttpStatusCode.Created,
             sut.StatusCode);
+
+        using var scope = fixture.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
+        var persisted = await dbContext.Todos.SingleOrDefaultAsync(t => t.Id == content!.Id);
+
+        Assert.NotNull(persisted);
+        Assert.Equal(testTodo.Title, persisted!.Title);
+        Assert.Equal(testTodo.Order, persisted.Order);
+
         await Verify(new
         {
             StatusCode = sut.StatusCode,
@@ -45,7 +55,6 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
         {
             Title = "",
             Order = 1,
-            Completed = false
         };
     
         var sut = await fixture.Client.PostAsJsonAsync("/todos",
@@ -53,6 +62,12 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
     
         Assert.Equal(System.Net.HttpStatusCode.BadRequest,
             sut.StatusCode);
+        using var scope = fixture.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
+        var persisted = await dbContext.Todos.ToListAsync();
+
+        Assert.Empty(persisted);
+        
         await Verify(sut);
     }
     
@@ -60,30 +75,42 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
     public async Task GetAllTodos_ReturnsSuccess()
     {
         await fixture.ResetDatabaseAsync();
+
         await fixture.Client.PostAsJsonAsync("/todos",
             new
             {
                 Title = "A",
                 Order = 1,
-                Completed = false
             });
+
         await fixture.Client.PostAsJsonAsync("/todos",
             new
             {
                 Title = "B",
                 Order = 2,
-                Completed = false
             });
         
         var sut = await fixture.Client.GetAsync("/todos");
-    
-        var content = sut.Content.ReadFromJsonAsync<List<Todo>>();
+        var fromApi = sut.Content.ReadFromJsonAsync<List<Todo>>();
+
         Assert.Equal(System.Net.HttpStatusCode.OK,
             sut.StatusCode);
+        
+        using var scope = fixture.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
+
+        var fromDb = await dbContext.Todos
+            .OrderBy(t => t.Id)
+            .ToListAsync();
+        
         await Verify(new 
         {
             StatusCode = sut.StatusCode,
-            Content = content
+            Content = new
+            {
+                FromApi = fromApi,
+                FromDb = fromDb
+            }
         });
     }
     
@@ -96,7 +123,6 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
             {
                 Title = "X",
                 Order = 1,
-                Completed = false
             });
         var todoContent = await testTodo.Content.ReadFromJsonAsync<Todo>();
     
@@ -104,10 +130,19 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
     
         Assert.Equal(System.Net.HttpStatusCode.OK,
             sut.StatusCode);
+        
+        using var scope = fixture.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
+        var persisted = await dbContext.Todos.SingleOrDefaultAsync(t => t.Id == todoContent!.Id);
+
         await Verify(new 
         {
             StatusCode = sut.StatusCode,
-            Content = todoContent
+            Content = new
+            {
+                FromApi = todoContent,
+                FromDb = persisted
+            }
         });
     }
     
@@ -119,6 +154,13 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
         var sut = await fixture.Client.GetAsync("/todos/9999");
     
         Assert.Equal(System.Net.HttpStatusCode.NotFound, sut.StatusCode);
+        
+        using var scope = fixture.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
+        var exists = await dbContext.Todos.AnyAsync(t => t.Id == 9999);
+        
+        Assert.False(exists);
+
         await Verify(sut);
     }
     
@@ -131,13 +173,20 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
             {
                 Title = "X",
                 Order = 1,
-                Completed = false
             });
         var todoContent = await testTodo.Content.ReadFromJsonAsync<Todo>();
 
         var sut = await fixture.Client.DeleteAsync($"/todos/{todoContent!.Id}");
     
         Assert.Equal(System.Net.HttpStatusCode.OK, sut.StatusCode);
+        
+        using var scope = fixture.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
+
+        var exists = await dbContext.Todos.AnyAsync(t => t.Id == todoContent.Id);
+        
+        Assert.False(exists);
+
         await Verify(sut);
         
     }
@@ -149,6 +198,7 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
         var sut = await fixture.Client.DeleteAsync("/todos/9999");
     
         Assert.Equal(System.Net.HttpStatusCode.NotFound, sut.StatusCode);
+
         await Verify(sut);
     }
     
@@ -160,6 +210,16 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
         var sut = await fixture.Client.DeleteAsync("/todos/");
     
         Assert.Equal(System.Net.HttpStatusCode.OK, sut.StatusCode);
+
+        using var scope = fixture.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
+
+        var fromDb = await dbContext.Todos
+            .OrderBy(t => t.Id)
+            .ToListAsync();
+        
+        Assert.Empty(fromDb);
+
         await Verify(sut);
     }
 }

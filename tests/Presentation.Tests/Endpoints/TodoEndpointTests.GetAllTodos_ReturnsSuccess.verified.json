@@ -1,8 +1,26 @@
 ﻿{
   "StatusCode": "OK",
   "Content": {
-    "Status": "RanToCompletion",
-    "Result": [
+    "FromApi": {
+      "Status": "RanToCompletion",
+      "Result": [
+        {
+          "Id": 1,
+          "Title": "A",
+          "Url": "https://localhost:7214/todos/1",
+          "IsCompleted": false,
+          "Order": 1
+        },
+        {
+          "Id": 2,
+          "Title": "B",
+          "Url": "https://localhost:7214/todos/2",
+          "IsCompleted": false,
+          "Order": 2
+        }
+      ]
+    },
+    "FromDb": [
       {
         "Id": 1,
         "Title": "A",

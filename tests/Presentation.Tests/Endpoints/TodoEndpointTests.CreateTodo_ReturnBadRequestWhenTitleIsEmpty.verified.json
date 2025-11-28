@@ -19,8 +19,7 @@
       "ObjectType": "dynamic",
       "Value": {
         "Title": "",
-        "Order": 1,
-        "Completed": false
+        "Order": 1
       },
       "Headers": [
         {

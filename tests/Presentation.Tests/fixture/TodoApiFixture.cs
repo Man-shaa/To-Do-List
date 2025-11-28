@@ -88,6 +88,11 @@ public sealed class TodoApiFixture :
             WithReseed = true
         });
     }
+    
+    public IServiceScope CreateScope()
+    {
+        return Services.CreateScope();
+    }
 
     public async ValueTask ResetDatabaseAsync() => await _respawner.ResetAsync(_dbConnection);
 }
