@@ -12,7 +12,7 @@
     "Method": {
       "Method": "DELETE"
     },
-    "RequestUri": "http://localhost/todos/2",
+    "RequestUri": "http://localhost/todos/1",
     "Headers": []
   },
   "IsSuccessStatusCode": true

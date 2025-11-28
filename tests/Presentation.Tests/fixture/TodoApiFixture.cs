@@ -1,11 +1,13 @@
 using System.Data.Common;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Npgsql;
 using Respawn;
+using Respawn.Graph;
 
 namespace Presentation.Tests.fixture;
 
@@ -71,27 +73,21 @@ public sealed class TodoApiFixture :
         using var scope = Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
 
-        await dbContext.Database.EnsureCreatedAsync(cts.Token);
-        // await dbContext.Database.MigrateAsync(cancellationToken: cts.Token);
+        // await dbContext.Database.EnsureCreatedAsync(cts.Token);
+        await dbContext.Database.MigrateAsync(cancellationToken: cts.Token);
 
         _dbConnection = new NpgsqlConnection(_postgresConnectionString);
         await _dbConnection.OpenAsync(cts.Token);
         _respawner = await Respawner.CreateAsync(_dbConnection, new RespawnerOptions
         {
-            DbAdapter = DbAdapter.Postgres
+            DbAdapter = DbAdapter.Postgres,
+            TablesToIgnore = new Table[]
+            {
+                "__EFMigrationsHistory"
+            },
+            WithReseed = true
         });
     }
 
     public async ValueTask ResetDatabaseAsync() => await _respawner.ResetAsync(_dbConnection);
-
-    public new async Task DisposeAsync()
-    {
-        await base.DisposeAsync();
-        _dbConnection.Dispose();
-        await _app.StopAsync();
-        if (_app is IAsyncDisposable asyncDisposable)
-            await asyncDisposable.DisposeAsync();
-        else
-            _app.Dispose();
-    }
 }

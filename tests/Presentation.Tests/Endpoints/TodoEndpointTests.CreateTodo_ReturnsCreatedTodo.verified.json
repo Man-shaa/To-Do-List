@@ -1,9 +1,9 @@
 ﻿{
   "StatusCode": "Created",
   "Content": {
-    "Id": 3,
+    "Id": 1,
     "Title": "Test Todo",
-    "Url": "https://localhost:7214/todos/3",
+    "Url": "https://localhost:7214/todos/1",
     "IsCompleted": false,
     "Order": 1
   }
