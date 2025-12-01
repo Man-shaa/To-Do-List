@@ -1,6 +1,6 @@
+using Application.Todos;
 using Application.Todos.Queries.GetTodo;
 using Domain.Entities;
-using Infrastructure.Repositories;
 using Moq;
 using NSubstitute;
 

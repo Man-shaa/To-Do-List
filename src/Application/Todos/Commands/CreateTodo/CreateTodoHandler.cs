@@ -1,6 +1,5 @@
+using Application.Todos.DTOs;
 using Domain.Entities;
-using Infrastructure.Repositories;
-using Infrastructure.Repositories.DTOs;
 using MediatR;
 
 namespace Application.Todos.Commands.CreateTodo;

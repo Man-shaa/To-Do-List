@@ -1,6 +1,6 @@
+using Application.Todos;
 using Application.Todos.Commands.DeleteTodo;
 using Domain.Entities;
-using Infrastructure.Repositories;
 using Moq;
 
 namespace Application.Tests.Todos.Commands.DeleteTodo

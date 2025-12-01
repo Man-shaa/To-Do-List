@@ -1,7 +1,7 @@
+using Application.Todos.DTOs;
 using Domain.Entities;
-using Infrastructure.Repositories.DTOs;
 
-namespace Infrastructure.Repositories;
+namespace Application.Todos;
 
 public interface ITodoRepository
 { 

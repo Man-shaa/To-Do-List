@@ -2,15 +2,11 @@ using Application;
 using Infrastructure;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using OpenTelemetry.Logs;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 using Presentation;
 using Presentation.Endpoints;
 using Presentation.ExceptionHandlers;
+using ServiceDefaults;
 
-const string serviceName = "Presentation";
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddPresentation()

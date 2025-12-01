@@ -1,7 +1,7 @@
 using Application.Todos.Commands.CreateTodo;
+using Application.Todos.DTOs;
 using FluentValidation.Results;
 using FluentValidation.TestHelper;
-using Infrastructure.Repositories.DTOs;
 
 namespace Application.Tests.Todos.Commands.CreateTodo;
 

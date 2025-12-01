@@ -1,6 +1,7 @@
+using Application.Todos;
+using Application.Todos.DTOs;
 using Domain.Entities;
 using Infrastructure.Repositories.Configurations;
-using Infrastructure.Repositories.DTOs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 

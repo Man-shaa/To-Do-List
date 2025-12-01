@@ -1,6 +1,6 @@
+using Application.Todos;
 using Application.Todos.Commands.UpdateTodo;
 using Domain.Entities;
-using Infrastructure.Repositories;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Exceptions;
 using Microsoft.AspNetCore.JsonPatch.Operations;

@@ -1,9 +1,9 @@
 using Application.Todos.Commands.CreateTodo;
 using Application.Todos.Commands.DeleteTodo;
 using Application.Todos.Commands.UpdateTodo;
+using Application.Todos.DTOs;
 using Application.Todos.Queries.GetTodo;
 using Domain.Entities;
-using Infrastructure.Repositories.DTOs;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Newtonsoft.Json;

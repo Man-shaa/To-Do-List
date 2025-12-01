@@ -1,17 +1,15 @@
+using Application.Todos.DTOs;
 using Domain.Entities;
 using Infrastructure.Persistence;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Configurations;
-using Infrastructure.Repositories.DTOs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Tests.Repositories;
 
-public sealed class TodoDbContextTests(ITestOutputHelper testOutputHelper)
+public sealed class TodoDbContextTests
 {
-    private readonly ITestOutputHelper _testOutputHelper = testOutputHelper;
-
     private static TodoDbContext CreateDbContext()
     {
         var dbName = Guid.NewGuid().ToString();
@@ -30,7 +28,7 @@ public sealed class TodoDbContextTests(ITestOutputHelper testOutputHelper)
         });
     }
 
-    private static TodoRepository CreateRepository(string dbName = null!)
+    private static TodoRepository CreateRepository()
     {
         var dbContext = CreateDbContext();
         var options = CreateOptions(new Uri("https://localhost:7214"));
@@ -50,7 +48,6 @@ public sealed class TodoDbContextTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public async Task GetAllAsync_WhenHasItems_ReturnsListOfTwoTodos()
     {
-        var dbName = Guid.NewGuid().ToString();
         var dbContext = CreateDbContext();
 
         dbContext.Todos.AddRange(
@@ -70,7 +67,6 @@ public sealed class TodoDbContextTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public async Task GetByIdAsync_WhenExists_ReturnsTodo()
     {
-        var dbName = Guid.NewGuid().ToString();
         var dbContext = CreateDbContext();
 
         dbContext.Todos.Add(new Todo(10, "Title todo 10", new Uri("https://localhost:7214/todos/10"), 1));
@@ -97,7 +93,6 @@ public sealed class TodoDbContextTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public async Task CreateAsync_AddsTodoAndPersists()
     {
-        var dbName = Guid.NewGuid().ToString();
         var dbContext = CreateDbContext();
         var options = CreateOptions(new Uri("https://localhost:7214/"));
         var repository = new TodoRepository(options, dbContext);
@@ -116,7 +111,6 @@ public sealed class TodoDbContextTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public async Task UpdateAsync_UpdatesExistingTodo()
     {
-        var dbName = Guid.NewGuid().ToString();
         var dbContext = CreateDbContext();
 
         var original = new Todo(1, "Old", new Uri("https://localhost:7214/todos/1"), 1);
@@ -138,7 +132,6 @@ public sealed class TodoDbContextTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public async Task DeleteByIdAsync_WhenNullTodo_ReturnsFalseAndDoesNotChangeDb()
     {
-        var dbName = Guid.NewGuid().ToString();
         var dbContext = CreateDbContext();
         var options = CreateOptions(new Uri("https://localhost:7214/"));
         var repository = new TodoRepository(options, dbContext);
@@ -151,7 +144,6 @@ public sealed class TodoDbContextTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public async Task DeleteByIdAsync_WhenExistingTodo_RemovesAndReturnsTrue()
     {
-        var dbName = Guid.NewGuid().ToString();
         var dbContext = CreateDbContext();
         var todo = new Todo(1, "To delete", new Uri("https://localhost:7214/todos/1"), 1);
 
@@ -169,7 +161,6 @@ public sealed class TodoDbContextTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public async Task DeleteAllAsync_RemovesAllTodos_ReturnsEmpty()
     {
-        var dbName = Guid.NewGuid().ToString();
         var dbContext = CreateDbContext();
 
         dbContext.Todos.AddRange(

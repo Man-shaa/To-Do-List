@@ -1,5 +1,4 @@
 using Domain.Entities;
-using Infrastructure.Repositories;
 using MediatR;
 
 namespace Application.Todos.Queries.GetTodo;

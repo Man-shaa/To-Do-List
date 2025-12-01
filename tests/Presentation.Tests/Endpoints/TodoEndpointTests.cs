@@ -37,12 +37,12 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
         var persisted = await dbContext.Todos.SingleOrDefaultAsync(t => t.Id == content!.Id);
 
         Assert.NotNull(persisted);
-        Assert.Equal(testTodo.Title, persisted!.Title);
+        Assert.Equal(testTodo.Title, persisted.Title);
         Assert.Equal(testTodo.Order, persisted.Order);
 
         await Verify(new
         {
-            StatusCode = sut.StatusCode,
+            sut.StatusCode,
             Content = content
         });
     }
@@ -105,7 +105,7 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
         
         await Verify(new 
         {
-            StatusCode = sut.StatusCode,
+            sut.StatusCode,
             Content = new
             {
                 FromApi = fromApi,
@@ -133,11 +133,11 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
         
         using var scope = fixture.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
-        var persisted = await dbContext.Todos.SingleOrDefaultAsync(t => t.Id == todoContent!.Id);
+        var persisted = await dbContext.Todos.SingleOrDefaultAsync(t => t.Id == todoContent.Id);
 
         await Verify(new 
         {
-            StatusCode = sut.StatusCode,
+            sut.StatusCode,
             Content = new
             {
                 FromApi = todoContent,
