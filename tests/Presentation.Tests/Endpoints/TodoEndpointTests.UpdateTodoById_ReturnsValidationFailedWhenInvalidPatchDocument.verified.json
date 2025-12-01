@@ -12,17 +12,17 @@
     "Status": 400
   },
   "Original": {
-    "Id": 1,
-    "Title": "X",
-    "Url": "https://localhost:7214/todos/1",
+    "Id": 666,
+    "Title": "Todo 666",
+    "Url": "https://localhost:7214/todos/666",
     "IsCompleted": false,
-    "Order": 1
+    "Order": 666
   },
   "Persisted": {
-    "Id": 1,
-    "Title": "X",
-    "Url": "https://localhost:7214/todos/1",
+    "Id": 666,
+    "Title": "Todo 666",
+    "Url": "https://localhost:7214/todos/666",
     "IsCompleted": false,
-    "Order": 1
+    "Order": 666
   }
 }

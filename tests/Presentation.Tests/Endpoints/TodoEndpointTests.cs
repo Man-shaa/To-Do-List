@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using Argon;
 using Azure;
 using Azure.Core.Serialization;
 using Domain.Entities;
@@ -32,30 +33,22 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
 
         var sut = await fixture.Client.PostAsJsonAsync("/todos",
             testTodo);
-        var content = await sut.Content.ReadFromJsonAsync<Todo>();
+        var apiResponse = await sut.Content.ReadFromJsonAsync<Todo>();
 
-        Assert.Equal(System.Net.HttpStatusCode.Created,
-            sut.StatusCode);
-
-        using var scope = fixture.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
-        var persisted = await dbContext.Todos.SingleOrDefaultAsync(t => t.Id == content!.Id);
-
-        Assert.NotNull(persisted);
-        Assert.Equal(testTodo.Title, persisted.Title);
-        Assert.Equal(testTodo.Order, persisted.Order);
+        await using var dbContext = fixture.CreateScopeDbContext();
+        var persisted = await dbContext.Todos.SingleAsync(t => t.Id == apiResponse!.Id);
 
         await Verify(new
         {
             sut.StatusCode,
-            Content = content
+            FromApi = apiResponse,
+            FromDb = persisted
         });
     }
     
     [Fact]
     public async Task CreateTodo_ReturnBadRequestWhenTitleIsEmpty()
     {
-        await fixture.ResetDatabaseAsync();
         var testTodo = new
         {
             Title = "",
@@ -64,47 +57,34 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
     
         var sut = await fixture.Client.PostAsJsonAsync("/todos",
             testTodo);
+        var apiResponse = sut.Content.ReadFromJsonAsync<ValidationProblemDetails>();
     
-        Assert.Equal(System.Net.HttpStatusCode.BadRequest,
-            sut.StatusCode);
-        using var scope = fixture.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
+        await using var dbContext = fixture.CreateScopeDbContext();
         var persisted = await dbContext.Todos.ToListAsync();
 
-        Assert.Empty(persisted);
-        
-        await Verify(sut);
+        await Verify(new
+        {
+            sut.StatusCode,
+            Content = new
+            {
+                FromApi = apiResponse,
+                FromDb = persisted
+            }
+        });
     }
     
     [Fact]
     public async Task GetAllTodos_ReturnsSuccess()
     {
         await fixture.ResetDatabaseAsync();
+        await fixture.SeedInitialTodosAsync();
 
-        await fixture.Client.PostAsJsonAsync("/todos",
-            new
-            {
-                Title = "A",
-                Order = 1,
-            });
-
-        await fixture.Client.PostAsJsonAsync("/todos",
-            new
-            {
-                Title = "B",
-                Order = 2,
-            });
-        
         var sut = await fixture.Client.GetAsync("/todos");
         var fromApi = sut.Content.ReadFromJsonAsync<List<Todo>>();
 
-        Assert.Equal(System.Net.HttpStatusCode.OK,
-            sut.StatusCode);
-        
-        using var scope = fixture.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
+        await using var dbContext = fixture.CreateScopeDbContext();
 
-        var fromDb = await dbContext.Todos
+        var persisted = await dbContext.Todos
             .OrderBy(t => t.Id)
             .ToListAsync();
         
@@ -114,38 +94,29 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
             Content = new
             {
                 FromApi = fromApi,
-                FromDb = fromDb
+                FromDb = persisted
             }
         });
     }
     
     [Fact]
-    public async Task GetTodoById_ReturnsTodoOfIdOne()
+    public async Task GetTodoById_ReturnsTodoOfId666()
     {
         await fixture.ResetDatabaseAsync();
-        var testTodo = await fixture.Client.PostAsJsonAsync("/todos",
-            new
-            {
-                Title = "X",
-                Order = 1,
-            });
-        var todoContent = await testTodo.Content.ReadFromJsonAsync<Todo>();
+        await fixture.SeedInitialTodosAsync();
     
-        var sut = await fixture.Client.GetAsync($"/todos/{todoContent!.Id}");
+        var sut = await fixture.Client.GetAsync($"/todos/666");
+        var apiResponse = sut.Content.ReadFromJsonAsync<Todo>();
     
-        Assert.Equal(System.Net.HttpStatusCode.OK,
-            sut.StatusCode);
-        
-        using var scope = fixture.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
-        var persisted = await dbContext.Todos.SingleOrDefaultAsync(t => t.Id == todoContent.Id);
+        await using var dbContext = fixture.CreateScopeDbContext();
+        var persisted = await dbContext.Todos.SingleOrDefaultAsync(t => t.Id == 666);
 
         await Verify(new 
         {
             sut.StatusCode,
             Content = new
             {
-                FromApi = todoContent,
+                FromApi = apiResponse,
                 FromDb = persisted
             }
         });
@@ -157,33 +128,27 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
         await fixture.ResetDatabaseAsync();
 
         var sut = await fixture.Client.GetAsync("/todos/9999");
+        var apiResponse = sut.Content.ReadFromJsonAsync<ValidationProblemDetails>();
     
-        Assert.Equal(System.Net.HttpStatusCode.NotFound, sut.StatusCode);
+        await using var dbContext = fixture.CreateScopeDbContext();
+        var persisted = await dbContext.Todos.AnyAsync(t => t.Id == 9999);
         
-        using var scope = fixture.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
-        var exists = await dbContext.Todos.AnyAsync(t => t.Id == 9999);
-        
-        Assert.False(exists);
-
-        await Verify(sut);
+        await Verify(new
+        {
+            sut,
+            IsTodoInDb = persisted
+        });
     }
 
     [Fact]
-    public async Task UpdateTodoById_ReturnsSuccessWhenTodoExists()
+    public async Task UpdateTodoById_ReturnsUpdatedTodoWhenTodoExists()
     {
         await fixture.ResetDatabaseAsync();
-        var testTodo = await fixture.Client.PostAsJsonAsync("/todos",
-            new
-            {
-                Title = "X",
-                Order = 1,
-            });
-        
-        var created = await testTodo.Content.ReadFromJsonAsync<Todo>();
-        Assert.NotNull(testTodo);
-        Assert.Equal(System.Net.HttpStatusCode.Created, testTodo.StatusCode);
+        await fixture.SeedInitialTodosAsync();
 
+        var initialTodo = await fixture.Client.GetAsync("/todos/666");
+        var initialTodoContent = await initialTodo.Content.ReadFromJsonAsync<Todo>();
+        
         var patchOps = new[]
         {
             new { op = "replace", path = "/order", value = (object)5 },
@@ -191,20 +156,18 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
             new { op = "replace", path = "/isCompleted", value = (object)true },
         };
         
-        var sut = await fixture.Client.PatchAsJsonAsync($"/todos/{created!.Id}", patchOps);
-        var fromApi = await sut.Content.ReadFromJsonAsync<Todo>();
+        var sut = await fixture.Client.PatchAsJsonAsync($"/todos/{initialTodoContent!.Id}", patchOps);
+        var apiResponse = await sut.Content.ReadFromJsonAsync<Todo>();
 
-        using var scope = fixture.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
-
-        var persisted = await dbContext.Todos.SingleAsync(t => t.Id == created.Id);
+        await using var dbContext = fixture.CreateScopeDbContext();
+        var persisted = await dbContext.Todos.SingleAsync(t => t.Id == initialTodoContent.Id);
 
         await Verify(new 
         {
             sut.StatusCode,
             Content = new
             {
-                FromApi = fromApi,
+                FromApi = apiResponse,
                 FromDb = persisted
             }
         });
@@ -214,20 +177,13 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
     public async Task UpdateTodoById_ReturnsValidationFailedWhenInvalidPatchDocument()
     {
         await fixture.ResetDatabaseAsync();
-        var testTodo = await fixture.Client.PostAsJsonAsync("/todos",
-            new
-            {
-                Title = "X",
-                Order = 1,
-            });
+        await fixture.SeedInitialTodosAsync();
 
-        var created = await testTodo.Content.ReadFromJsonAsync<Todo>();
-        Assert.NotNull(testTodo);
-        Assert.Equal(System.Net.HttpStatusCode.Created, testTodo.StatusCode);
+        var initialTodo = await fixture.Client.GetAsync("/todos/666");
+        var initialTodoContent = await initialTodo.Content.ReadFromJsonAsync<Todo>();
 
-        using var initialScope = fixture.CreateScope();
-        var initialDb = initialScope.ServiceProvider.GetRequiredService<TodoDbContext>();
-        var original = await initialDb.Todos.AsNoTracking().SingleAsync(t => t.Id == created!.Id);
+        await using var initialDb = fixture.CreateScopeDbContext();
+        var original = await initialDb.Todos.AsNoTracking().SingleAsync(t => t.Id == initialTodoContent!.Id);
 
         var patchOps = new[]
         {
@@ -237,13 +193,12 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
             new { op = "replace", path = "/isCopleted", value = (object)true }
         };
 
-        var sut = await fixture.Client.PatchAsJsonAsync($"/todos/{created!.Id}", patchOps);
+        var sut = await fixture.Client.PatchAsJsonAsync($"/todos/{initialTodoContent!.Id}", patchOps);
 
         var validationErrors = await sut.Content.ReadFromJsonAsync<ValidationProblemDetails>();
 
-        using var scope = fixture.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
-        var persisted = await dbContext.Todos.AsNoTracking().SingleAsync(t => t.Id == created.Id);
+        await using var dbContext = fixture.CreateScopeDbContext();
+        var persisted = await dbContext.Todos.AsNoTracking().SingleAsync(t => t.Id == initialTodoContent.Id);
 
         await Verify(new
         {
@@ -258,28 +213,23 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
     public async Task DeleteTodoById_ReturnsSuccessWhenTodoExists()
     {
         await fixture.ResetDatabaseAsync();
-        var testTodo = await fixture.Client.PostAsJsonAsync("/todos",
-            new
-            {
-                Title = "X",
-                Order = 1,
-            });
-        var todoContent = await testTodo.Content.ReadFromJsonAsync<Todo>();
+        await fixture.SeedInitialTodosAsync();
 
-        var sut = await fixture.Client.DeleteAsync($"/todos/{todoContent!.Id}");
+        var sut = await fixture.Client.DeleteAsync($"/todos/666");
     
-        Assert.Equal(System.Net.HttpStatusCode.OK, sut.StatusCode);
-        
-        using var scope = fixture.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
+        await using var dbContext = fixture.CreateScopeDbContext();
 
-        var exists = await dbContext.Todos.AnyAsync(t => t.Id == todoContent.Id);
+        var exists = await dbContext.Todos.AnyAsync(t => t.Id == 666);
         
         Assert.False(exists);
 
-        await Verify(sut);
-        
+        await Verify(new
+        {
+            sut,
+            IsTodoInDb = exists
+        });
     }
+
     [Fact]
     public async Task DeleteTodoById_ReturnsNotFoundWhenTodoDoesNotExists()
     {
@@ -287,8 +237,6 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
 
         var sut = await fixture.Client.DeleteAsync("/todos/9999");
     
-        Assert.Equal(System.Net.HttpStatusCode.NotFound, sut.StatusCode);
-
         await Verify(sut);
     }
     
@@ -296,13 +244,11 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
     public async Task DeleteAllTodos_ReturnsSuccess()
     {
         await fixture.ResetDatabaseAsync();
+        await fixture.SeedInitialTodosAsync();
 
         var sut = await fixture.Client.DeleteAsync("/todos/");
     
-        Assert.Equal(System.Net.HttpStatusCode.OK, sut.StatusCode);
-
-        using var scope = fixture.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
+        await using var dbContext = fixture.CreateScopeDbContext();
 
         var fromDb = await dbContext.Todos
             .OrderBy(t => t.Id)

@@ -1,4 +1,5 @@
 using System.Data.Common;
+using Domain.Entities;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Npgsql;
 using Respawn;
-using Respawn.Graph;
 
 namespace Presentation.Tests.fixture;
 
@@ -81,18 +81,50 @@ public sealed class TodoApiFixture :
         _respawner = await Respawner.CreateAsync(_dbConnection, new RespawnerOptions
         {
             DbAdapter = DbAdapter.Postgres,
-            TablesToIgnore = new Table[]
-            {
+            TablesToIgnore =
+            [
                 "__EFMigrationsHistory"
-            },
+            ],
             WithReseed = true
         });
     }
     
-    public IServiceScope CreateScope()
+    public TodoDbContext CreateScopeDbContext()
     {
-        return Services.CreateScope();
+        return Services.CreateScope().ServiceProvider.GetRequiredService<TodoDbContext>();
     }
 
-    public async ValueTask ResetDatabaseAsync() => await _respawner.ResetAsync(_dbConnection);
+    public async ValueTask ResetDatabaseAsync()
+    {
+        await _respawner.ResetAsync(_dbConnection);
+    }
+
+    // public async Task EmptyDatabaseAsync()
+    // {
+    //     await _respawner.ResetAsync(_dbConnection);
+    //     using var scope = Services.CreateScope();
+    //     var dbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
+    //     
+    //     dbContext.Todos.RemoveRange(dbContext.Todos);
+    // }
+
+    public async Task SeedInitialTodosAsync()
+    {
+        using var scope = Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
+
+        if (await dbContext.Todos.AnyAsync())
+        {
+            dbContext.Todos.RemoveRange(dbContext.Todos);
+            await dbContext.SaveChangesAsync();
+        }
+
+        dbContext.Todos.AddRange(
+            new Todo(666, "Todo 666", new Uri("https://localhost:7214/todos/666"), 666),
+            new Todo(667, "Todo 667", new Uri("https://localhost:7214/todos/667"), 667),
+            new Todo(668, "Todo 668", new Uri("https://localhost:7214/todos/668"), 668)
+        );
+
+        await dbContext.SaveChangesAsync();
+    }
 }

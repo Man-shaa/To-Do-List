@@ -1,19 +1,22 @@
 ﻿{
-  "Version": "1.1",
-  "Content": {
-    "Headers": []
-  },
-  "StatusCode": "OK",
-  "ReasonPhrase": "OK",
-  "Headers": [],
-  "TrailingHeaders": [],
-  "RequestMessage": {
+  "sut": {
     "Version": "1.1",
-    "Method": {
-      "Method": "DELETE"
+    "Content": {
+      "Headers": []
     },
-    "RequestUri": "http://localhost/todos/1",
-    "Headers": []
+    "StatusCode": "OK",
+    "ReasonPhrase": "OK",
+    "Headers": [],
+    "TrailingHeaders": [],
+    "RequestMessage": {
+      "Version": "1.1",
+      "Method": {
+        "Method": "DELETE"
+      },
+      "RequestUri": "http://localhost/todos/666",
+      "Headers": []
+    },
+    "IsSuccessStatusCode": true
   },
-  "IsSuccessStatusCode": true
+  "IsTodoInDb": false
 }

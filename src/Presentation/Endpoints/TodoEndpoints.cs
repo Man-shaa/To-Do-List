@@ -5,7 +5,6 @@ using Application.Todos.DTOs;
 using Application.Todos.Queries.GetTodo;
 using Domain.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.JsonPatch;
 using Newtonsoft.Json;
 using ServiceDefaults;

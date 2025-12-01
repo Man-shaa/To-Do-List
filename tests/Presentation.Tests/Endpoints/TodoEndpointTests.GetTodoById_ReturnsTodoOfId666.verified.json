@@ -1,0 +1,22 @@
+﻿{
+  "StatusCode": "OK",
+  "Content": {
+    "FromApi": {
+      "Status": "RanToCompletion",
+      "Result": {
+        "Id": 666,
+        "Title": "Todo 666",
+        "Url": "https://localhost:7214/todos/666",
+        "IsCompleted": false,
+        "Order": 666
+      }
+    },
+    "FromDb": {
+      "Id": 666,
+      "Title": "Todo 666",
+      "Url": "https://localhost:7214/todos/666",
+      "IsCompleted": false,
+      "Order": 666
+    }
+  }
+}
