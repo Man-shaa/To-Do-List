@@ -1,14 +1,14 @@
+using AspireConfiguration;
 using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
-IResourceBuilder<PostgresDatabaseResource> postgres;
 
-postgres = builder.AddPostgres("postgres")
+var postgres = builder.AddPostgres(AspireResourcesName.Postgres)
     .WithPgWeb()
     .WithDataVolume()
-    .AddDatabase("todo-db");
+    .AddDatabase(AspireResourcesName.TodoDatabase);
 
-builder.AddProject<Presentation>("Presentation")
+builder.AddProject<Presentation>(AspireResourcesName.Presentation)
     .WithEnvironment("SwaggerEnabled", "true")
     .WithReference(postgres)
     .WaitFor(postgres);

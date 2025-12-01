@@ -5,8 +5,10 @@ using Application.Todos.DTOs;
 using Application.Todos.Queries.GetTodo;
 using Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.JsonPatch;
 using Newtonsoft.Json;
+using ServiceDefaults;
 
 namespace Presentation.Endpoints;
 
@@ -37,6 +39,8 @@ public static class TodoEndpoints
         app.MapDelete("/todos/{id:int}", DeleteTodoByIdAsync)
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound);
+
+        app.MapDefaultEndpoints();
     }
 
     private static async Task<List<Todo>> GetAllTodoAsync(ISender sender) =>

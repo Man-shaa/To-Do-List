@@ -27,16 +27,16 @@ Content-Type: application/json
     {
       "op": "replace",
       "path": "/order",
-      "value": -1
+      "value": 2
     },
     {
-      "op": "replace",
+      "op": "repldace",
       "path": "/title",
       "value": "New Title"
     },
     {
       "op": "replace",
-      "path": "/completed",
+      "path": "/isCdompleted",
       "value": true
     }
 ]

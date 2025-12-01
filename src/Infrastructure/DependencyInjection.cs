@@ -26,7 +26,7 @@ public static class DependencyInjection
 
     private static void AddTodoDbContext(this IHostApplicationBuilder builder)
     {
-        builder.AddNpgsqlDbContext<Persistence.TodoDbContext>("todo-db",
+        builder.AddNpgsqlDbContext<Persistence.TodoDbContext>(AspireConfiguration.AspireResourcesName.TodoDatabase,
             null,
             options =>
             {

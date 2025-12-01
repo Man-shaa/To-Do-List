@@ -1,0 +1,19 @@
+﻿{
+  "StatusCode": "OK",
+  "Content": {
+    "FromApi": {
+      "Id": 1,
+      "Title": "New Title",
+      "Url": "https://localhost:7214/todos/1",
+      "IsCompleted": true,
+      "Order": 5
+    },
+    "FromDb": {
+      "Id": 1,
+      "Title": "New Title",
+      "Url": "https://localhost:7214/todos/1",
+      "IsCompleted": true,
+      "Order": 5
+    }
+  }
+}

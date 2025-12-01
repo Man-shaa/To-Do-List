@@ -1,0 +1,28 @@
+﻿{
+  "StatusCode": "BadRequest",
+  "Validation": {
+    "Errors": {
+      "PatchDocument": [
+        "Only 'replace' operations are permitted.",
+        "Value field required.",
+        "Invalid JsonPatch operation 'replae'."
+      ]
+    },
+    "Title": "Validation failed",
+    "Status": 400
+  },
+  "Original": {
+    "Id": 1,
+    "Title": "X",
+    "Url": "https://localhost:7214/todos/1",
+    "IsCompleted": false,
+    "Order": 1
+  },
+  "Persisted": {
+    "Id": 1,
+    "Title": "X",
+    "Url": "https://localhost:7214/todos/1",
+    "IsCompleted": false,
+    "Order": 1
+  }
+}

@@ -40,7 +40,7 @@ public sealed class TodoApiFixture :
         };
         var appBuilder = DistributedApplication.CreateBuilder(options);
 
-        Postgres = appBuilder.AddPostgres("todo-db")
+        Postgres = appBuilder.AddPostgres(AspireConfiguration.AspireResourcesName.TodoDatabase)
             .WithImageTag("latest");
 
         _app = appBuilder.Build();

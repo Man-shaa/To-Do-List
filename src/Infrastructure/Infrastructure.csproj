@@ -22,6 +22,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\..\AspireConfiguration\AspireConfiguration.csproj" />
     <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>

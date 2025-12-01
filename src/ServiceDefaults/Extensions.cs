@@ -12,9 +12,6 @@ namespace ServiceDefaults;
 
 public static class Extensions
 {
-    private const string HealthEndpointPath = "/health";
-    private const string AlivenessEndpointPath = "/alive";
-
     public static TBuilder AddServiceDefaults<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
         builder.ConfigureOpenTelemetry();
@@ -80,7 +77,7 @@ public static class Extensions
         return builder;
     }
 
-    public static WebApplication MapDefaultEndpoints(this WebApplication app)
+    public static void MapDefaultEndpoints(this WebApplication app)
     {
         if (app.Environment.IsDevelopment())
         {
@@ -88,7 +85,5 @@ public static class Extensions
 
             app.MapHealthChecks("/alive", new HealthCheckOptions { Predicate = r => r.Tags.Contains("live") });
         }
-
-        return app;
     }
 }
