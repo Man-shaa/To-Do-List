@@ -1,6 +1,9 @@
 ﻿{
   "sut": {
     "Status": "400 Bad Request",
+    "Headers": {
+      "api-supported-versions": "1"
+    },
     "Content": {
       "Headers": {
         "Content-Length": "94",

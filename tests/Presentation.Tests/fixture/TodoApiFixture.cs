@@ -1,4 +1,5 @@
 using System.Data.Common;
+using System.Globalization;
 using Domain.Entities;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Npgsql;
+using Presentation.Common.Constants;
 using Respawn;
 
 namespace Presentation.Tests.fixture;
@@ -119,10 +121,13 @@ public sealed class TodoApiFixture :
             await dbContext.SaveChangesAsync();
         }
 
+        var baseUrl = $"{ApiRoutes.HttpsBaseUrl}/{ApiRoutes.Root}"
+            .Replace("{version:apiVersion}", 1.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
+        
         dbContext.Todos.AddRange(
-            new Todo(666, "Todo 666", new Uri("https://localhost:7214/todos/666"), 666),
-            new Todo(667, "Todo 667", new Uri("https://localhost:7214/todos/667"), 667),
-            new Todo(668, "Todo 668", new Uri("https://localhost:7214/todos/668"), 668)
+            new Todo(666, "Todo 666", new Uri(baseUrl + "/todos/666"), 666),
+            new Todo(667, "Todo 667", new Uri(baseUrl + "/todos/667"), 667),
+            new Todo(668, "Todo 668", new Uri(baseUrl + "/todos/668"), 668)
         );
 
         await dbContext.SaveChangesAsync();

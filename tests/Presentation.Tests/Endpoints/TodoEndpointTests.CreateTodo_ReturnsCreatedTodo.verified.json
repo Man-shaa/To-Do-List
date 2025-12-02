@@ -2,6 +2,7 @@
   "sut": {
     "Status": "201 Created",
     "Headers": {
+      "api-supported-versions": "1",
       "Location": "https://localhost:7214/todos/1"
     },
     "Content": {

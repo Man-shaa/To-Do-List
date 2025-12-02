@@ -3,8 +3,7 @@ using Infrastructure;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Presentation;
-using Presentation.Endpoints;
-using Presentation.ExceptionHandlers;
+using Presentation.Configurations;
 using ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,13 +15,7 @@ builder.AddPresentation()
 
 var app = builder.Build();
 
-app.UseApplicationExceptionHandling();
-
-app.MapTodoEndpoints();
-app.MapOpenApi();
-app.MapSwagger();
-app.UseSwagger();
-app.UseSwaggerUI();
+await app.AddWebApplicationConfiguration();
 
 using (var scope = app.Services.CreateScope())
 {

@@ -3,15 +3,15 @@ GET https://localhost:7214/
 Accept: application/json
 
 ### Get all todos
-GET https://localhost:7214/todos
+GET https://localhost:7214/api/v1/todos
 Accept: application/json
 
 ### Get todo by ID
-GET https://localhost:7214/todos/1
+GET https://localhost:7214/api/v1/todos/1
 Accept: application/json
 
 ### Create a new todo
-POST https://localhost:7214/todos
+POST https://localhost:7214/api/v1/todos
 Content-Type: application/json
 
 {
@@ -20,7 +20,7 @@ Content-Type: application/json
 }
 
 ### Patch a Todo
-PATCH https://localhost:7214/todos/1
+PATCH https://localhost:7214/api/v1/todos/3
 Content-Type: application/json
 
 [
@@ -30,19 +30,19 @@ Content-Type: application/json
       "value": 2
     },
     {
-      "op": "repldace",
+      "op": "replace",
       "path": "/title",
       "value": "New Title"
     },
     {
       "op": "replace",
-      "path": "/isCdompleted",
+      "path": "/isCompleted",
       "value": true
     }
 ]
 
 ### Delete todo by ID
-DELETE https://localhost:7214/todos/11
+DELETE https://localhost:7214/api/v1/todos/3
 
 ### Delete all Todos
-DELETE https://localhost:7214/todos/
+DELETE https://localhost:7214/api/v1/todos/

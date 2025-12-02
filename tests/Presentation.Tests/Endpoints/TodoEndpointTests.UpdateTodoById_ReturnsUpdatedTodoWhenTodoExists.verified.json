@@ -1,19 +1,28 @@
 ﻿{
-  "StatusCode": "OK 200",
-  "Content": {
-    "FromApi": {
-      "Id": 666,
-      "Title": "New Title",
-      "Url": "https://localhost:7214/todos/666",
-      "IsCompleted": true,
-      "Order": 5
+  "sut": {
+    "Status": "200 OK",
+    "Headers": {
+      "api-supported-versions": "1"
     },
-    "FromDb": {
-      "Id": 666,
-      "Title": "New Title",
-      "Url": "https://localhost:7214/todos/666",
-      "IsCompleted": true,
-      "Order": 5
+    "Content": {
+      "Headers": {
+        "Content-Length": "107",
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "Value": {
+        "id": 666,
+        "title": "New Title",
+        "url": "https://localhost:7214/api/v1/todos/666",
+        "isCompleted": true,
+        "order": 5
+      }
     }
+  },
+  "FromDb": {
+    "Id": 666,
+    "Title": "New Title",
+    "Url": "https://localhost:7214/api/v1/todos/666",
+    "IsCompleted": true,
+    "Order": 5
   }
 }

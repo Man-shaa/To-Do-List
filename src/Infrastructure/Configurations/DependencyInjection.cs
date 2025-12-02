@@ -49,5 +49,4 @@ public static class DependencyInjection
 
         builder.Services.AddScoped<ITodoRepository, TodoRepository>();
     }
-
 }

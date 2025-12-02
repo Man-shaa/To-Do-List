@@ -1,14 +1,8 @@
+using System.Globalization;
 using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
-using Argon;
-using Azure;
-using Azure.Core.Serialization;
 using Domain.Entities;
-using Infrastructure.Persistence;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Presentation.Common.Constants;
 using Presentation.Tests.fixture;
 
 namespace Presentation.Tests.Endpoints;
@@ -17,6 +11,8 @@ namespace Presentation.Tests.Endpoints;
 public sealed class TodoEndpointTests(TodoApiFixture fixture)
     : IClassFixture<TodoApiFixture>, IAsyncLifetime
 {
+    private readonly string _baseUrl = $"{ApiRoutes.Root}"
+        .Replace("{version:apiVersion}", 1.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
     public ValueTask InitializeAsync() => fixture.ResetDatabaseAsync();
 
     public ValueTask DisposeAsync() => ValueTask.CompletedTask;
@@ -31,8 +27,10 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
             Order = 1,
         };
 
-        var sut = await fixture.Client.PostAsJsonAsync("/todos",
+        var url = $"{_baseUrl}/{ApiRoutes.Todos.Create}";
+        var sut = await fixture.Client.PostAsJsonAsync(url,
             testTodo);
+
         var apiResponse = await sut.Content.ReadFromJsonAsync<Todo>();
 
         await using var dbContext = fixture.CreateScopeDbContext();
@@ -54,10 +52,10 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
             Order = 1,
         };
     
-        var sut = await fixture.Client.PostAsJsonAsync("/todos",
+        var url = $"{_baseUrl}/{ApiRoutes.Todos.Create}";
+        var sut = await fixture.Client.PostAsJsonAsync(url,
             testTodo);
-        var apiResponse = sut.Content.ReadFromJsonAsync<ValidationProblemDetails>();
-    
+
         await using var dbContext = fixture.CreateScopeDbContext();
         var persisted = await dbContext.Todos.ToListAsync();
 
@@ -74,14 +72,10 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
         await fixture.ResetDatabaseAsync();
         await fixture.SeedInitialTodosAsync();
 
-        var sut = await fixture.Client.GetAsync("/todos");
-        var fromApi = sut.Content.ReadFromJsonAsync<List<Todo>>();
+        var url = $"{_baseUrl}/{ApiRoutes.Todos.GetAll}";
+        var sut = await fixture.Client.GetAsync(url);
 
         await using var dbContext = fixture.CreateScopeDbContext();
-
-        var persisted = await dbContext.Todos
-            .OrderBy(t => t.Id)
-            .ToListAsync();
 
         await Verify(sut);
     }
@@ -92,7 +86,9 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
         await fixture.ResetDatabaseAsync();
         await fixture.SeedInitialTodosAsync();
     
-        var sut = await fixture.Client.GetAsync($"/todos/666");
+        var url = $"{_baseUrl}/{ApiRoutes.Todos.GetById}"
+            .Replace("{todoId}", 666.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
+        var sut = await fixture.Client.GetAsync(url);
     
         await using var dbContext = fixture.CreateScopeDbContext();
 
@@ -104,7 +100,9 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
     {
         await fixture.ResetDatabaseAsync();
 
-        var sut = await fixture.Client.GetAsync("/todos/9999");
+        var url = $"{_baseUrl}/{ApiRoutes.Todos.GetById}"
+            .Replace("{todoId}", 9999.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
+        var sut = await fixture.Client.GetAsync(url);
 
         await using var dbContext = fixture.CreateScopeDbContext();
 
@@ -117,7 +115,9 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
         await fixture.ResetDatabaseAsync();
         await fixture.SeedInitialTodosAsync();
 
-        var initialTodo = await fixture.Client.GetAsync("/todos/666");
+        var getAsyncUrl = $"{_baseUrl}/{ApiRoutes.Todos.GetById}"
+            .Replace("{todoId}", 666.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
+        var initialTodo = await fixture.Client.GetAsync(getAsyncUrl);
         var initialTodoContent = await initialTodo.Content.ReadFromJsonAsync<Todo>();
         
         var patchOps = new[]
@@ -126,21 +126,18 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
             new { op = "replace", path = "/title", value = (object)"New Title" },
             new { op = "replace", path = "/isCompleted", value = (object)true },
         };
-        
-        var sut = await fixture.Client.PatchAsJsonAsync($"/todos/{initialTodoContent!.Id}", patchOps);
-        var apiResponse = await sut.Content.ReadFromJsonAsync<Todo>();
+
+        var url = $"{_baseUrl}/{ApiRoutes.Todos.UpdateById}"
+            .Replace("{todoId}", initialTodoContent!.Id.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
+        var sut = await fixture.Client.PatchAsJsonAsync(url, patchOps);
 
         await using var dbContext = fixture.CreateScopeDbContext();
         var persisted = await dbContext.Todos.FindAsync(initialTodoContent.Id);
 
         await Verify(new 
         {
-            sut.StatusCode,
-            Content = new
-            {
-                FromApi = apiResponse,
-                FromDb = persisted
-            }
+            sut,
+            FromDb = persisted
         });
     }
     
@@ -150,7 +147,9 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
         await fixture.ResetDatabaseAsync();
         await fixture.SeedInitialTodosAsync();
 
-        var initialTodo = await fixture.Client.GetAsync("/todos/666");
+        var getAsyncUrl = $"{_baseUrl}/{ApiRoutes.Todos.GetById}"
+            .Replace("{todoId}", 666.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
+        var initialTodo = await fixture.Client.GetAsync(getAsyncUrl);
         var initialTodoContent = await initialTodo.Content.ReadFromJsonAsync<Todo>();
 
         await using var initialDb = fixture.CreateScopeDbContext();
@@ -164,17 +163,16 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
             new { op = "replace", path = "/isCopleted", value = (object)true }
         };
 
-        var sut = await fixture.Client.PatchAsJsonAsync($"/todos/{initialTodoContent!.Id}", patchOps);
-
-        var validationErrors = await sut.Content.ReadFromJsonAsync<ValidationProblemDetails>();
+        var url = $"{_baseUrl}/{ApiRoutes.Todos.UpdateById}"
+            .Replace("{todoId}", initialTodoContent!.Id.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
+        var sut = await fixture.Client.PatchAsJsonAsync(url, patchOps);
 
         await using var dbContext = fixture.CreateScopeDbContext();
         var persisted = await dbContext.Todos.AsNoTracking().SingleAsync(t => t.Id == initialTodoContent.Id);
 
         await Verify(new
         {
-            sut.StatusCode,
-            Validation = validationErrors,
+            sut,
             Original = original,
             Persisted = persisted
         });
@@ -186,7 +184,9 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
         await fixture.ResetDatabaseAsync();
         await fixture.SeedInitialTodosAsync();
 
-        var sut = await fixture.Client.DeleteAsync($"/todos/666");
+        var url = $"{_baseUrl}/{ApiRoutes.Todos.DeleteById}"
+            .Replace("{todoId}", 666.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
+        var sut = await fixture.Client.DeleteAsync(url);
     
         await using var dbContext = fixture.CreateScopeDbContext();
 
@@ -206,7 +206,9 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
     {
         await fixture.ResetDatabaseAsync();
 
-        var sut = await fixture.Client.DeleteAsync("/todos/9999");
+        var url = $"{_baseUrl}/{ApiRoutes.Todos.DeleteById}"
+            .Replace("{todoId}", 9999.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
+        var sut = await fixture.Client.DeleteAsync(url);
     
         await Verify(sut);
     }
@@ -217,7 +219,8 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
         await fixture.ResetDatabaseAsync();
         await fixture.SeedInitialTodosAsync();
 
-        var sut = await fixture.Client.DeleteAsync("/todos/");
+        var url = $"{_baseUrl}/{ApiRoutes.Todos.DeleteAll}";
+        var sut = await fixture.Client.DeleteAsync(url);
     
         await using var dbContext = fixture.CreateScopeDbContext();
 

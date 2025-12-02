@@ -1,29 +1,32 @@
 ﻿{
   "Status": "200 OK",
+  "Headers": {
+    "api-supported-versions": "1"
+  },
   "Content": {
     "Headers": {
-      "Content-Length": "310",
+      "Content-Length": "331",
       "Content-Type": "application/json; charset=utf-8"
     },
     "Value": [
       {
         "id": 666,
         "title": "Todo 666",
-        "url": "https://localhost:7214/todos/666",
+        "url": "https://localhost:7214/api/v1/todos/666",
         "isCompleted": false,
         "order": 666
       },
       {
         "id": 667,
         "title": "Todo 667",
-        "url": "https://localhost:7214/todos/667",
+        "url": "https://localhost:7214/api/v1/todos/667",
         "isCompleted": false,
         "order": 667
       },
       {
         "id": 668,
         "title": "Todo 668",
-        "url": "https://localhost:7214/todos/668",
+        "url": "https://localhost:7214/api/v1/todos/668",
         "isCompleted": false,
         "order": 668
       }

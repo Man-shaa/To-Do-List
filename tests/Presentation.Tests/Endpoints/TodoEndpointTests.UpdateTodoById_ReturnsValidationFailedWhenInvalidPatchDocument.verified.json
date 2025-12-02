@@ -1,27 +1,38 @@
 ﻿{
-  "StatusCode": "BadRequest 400",
-  "Validation": {
-    "Errors": {
-      "PatchDocument": [
-        "Only 'replace' operations are permitted.",
-        "Value field required.",
-        "Invalid JsonPatch operation 'replae'."
-      ]
+  "sut": {
+    "Status": "400 Bad Request",
+    "Headers": {
+      "api-supported-versions": "1"
     },
-    "Title": "Validation failed",
-    "Status": 400
+    "Content": {
+      "Headers": {
+        "Content-Length": "178",
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "Value": {
+        "title": "Validation failed",
+        "status": 400,
+        "errors": {
+          "PatchDocument": [
+            "Only 'replace' operations are permitted.",
+            "Value field required.",
+            "Invalid JsonPatch operation 'replae'."
+          ]
+        }
+      }
+    }
   },
   "Original": {
     "Id": 666,
     "Title": "Todo 666",
-    "Url": "https://localhost:7214/todos/666",
+    "Url": "https://localhost:7214/api/v1/todos/666",
     "IsCompleted": false,
     "Order": 666
   },
   "Persisted": {
     "Id": 666,
     "Title": "Todo 666",
-    "Url": "https://localhost:7214/todos/666",
+    "Url": "https://localhost:7214/api/v1/todos/666",
     "IsCompleted": false,
     "Order": 666
   }

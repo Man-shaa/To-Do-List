@@ -1,6 +1,9 @@
 ﻿{
   "sut": {
-    "Status": "200 OK"
+    "Status": "200 OK",
+    "Headers": {
+      "api-supported-versions": "1"
+    }
   },
   "IsTodoInDb": false
 }
