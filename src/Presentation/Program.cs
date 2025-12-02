@@ -9,10 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddPresentation()
     .AddInfrastructure()
-    .AddApplication()
-    .AddServiceDefaults();
+    .AddApplication();
 
-var app = builder.Build();
+var app = builder
+    .AddAspireClientConfiguration()
+    .Build();
 
 app.AddWebApplicationConfiguration();
 

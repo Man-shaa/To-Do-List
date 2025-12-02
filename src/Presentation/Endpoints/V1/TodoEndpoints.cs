@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 using Presentation.Common.Constants;
 using ServiceDefaults;
 
-namespace Presentation.Endpoints;
+namespace Presentation.Endpoints.V1;
 
 public static class TodoEndpoints
 {

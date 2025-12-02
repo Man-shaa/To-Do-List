@@ -1,4 +1,4 @@
-using Presentation.Endpoints;
+using Presentation.Endpoints.V1;
 using Presentation.ExceptionHandlers;
 using ServiceDefaults;
 
