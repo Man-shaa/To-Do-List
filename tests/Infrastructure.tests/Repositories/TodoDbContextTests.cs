@@ -5,6 +5,7 @@ using Infrastructure.Repositories;
 using Infrastructure.Repositories.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Presentation.Common.Constants;
 
 namespace Infrastructure.Tests.Repositories;
 
@@ -31,7 +32,7 @@ public sealed class TodoDbContextTests
     private static TodoRepository CreateRepository()
     {
         var dbContext = CreateDbContext();
-        var options = CreateOptions(new Uri("https://localhost:7214"));
+        var options = CreateOptions(new Uri(ApiRoutes.HttpsBaseUrl));
 
         return new TodoRepository(options, dbContext);
     }
@@ -51,12 +52,12 @@ public sealed class TodoDbContextTests
         var dbContext = CreateDbContext();
 
         dbContext.Todos.AddRange(
-            new Todo(1, "A", new Uri("https://localhost:7214/todos/1"), 1),
-            new Todo(2, "B", new Uri("https://localhost:7214/todos/2"), 2)
+            new Todo(1, "A", new Uri(ApiRoutes.HttpsBaseUrl + "/todos/1"), 1),
+            new Todo(2, "B", new Uri(ApiRoutes.HttpsBaseUrl + "/todos/2"), 2)
         );
         await dbContext.SaveChangesAsync();
 
-        var options = CreateOptions(new Uri("https://localhost:7214/"));
+        var options = CreateOptions(new Uri(ApiRoutes.HttpsBaseUrl));
         var repository = new TodoRepository(options, dbContext);
 
         var sut = await repository.GetAllAsync(CancellationToken.None);
@@ -69,10 +70,10 @@ public sealed class TodoDbContextTests
     {
         var dbContext = CreateDbContext();
 
-        dbContext.Todos.Add(new Todo(10, "Title todo 10", new Uri("https://localhost:7214/todos/10"), 1));
+        dbContext.Todos.Add(new Todo(10, "Title todo 10", new Uri(ApiRoutes.HttpsBaseUrl + "/todos/10"), 1));
         await dbContext.SaveChangesAsync();
 
-        var options = CreateOptions(new Uri("https://localhost:7214/"));
+        var options = CreateOptions(new Uri(ApiRoutes.HttpsBaseUrl));
         var repository = new TodoRepository(options, dbContext);
 
         var sut = await repository.GetByIdAsync(10, CancellationToken.None);
@@ -94,7 +95,7 @@ public sealed class TodoDbContextTests
     public async Task CreateAsync_AddsTodoAndPersists()
     {
         var dbContext = CreateDbContext();
-        var options = CreateOptions(new Uri("https://localhost:7214/"));
+        var options = CreateOptions(new Uri(ApiRoutes.HttpsBaseUrl));
         var repository = new TodoRepository(options, dbContext);
 
         var dto = new TodoCreateDto
@@ -113,11 +114,11 @@ public sealed class TodoDbContextTests
     {
         var dbContext = CreateDbContext();
 
-        var original = new Todo(1, "Old", new Uri("https://localhost:7214/todos/1"), 1);
+        var original = new Todo(1, "Old", new Uri(ApiRoutes.HttpsBaseUrl + "/todos/1"), 1);
         dbContext.Todos.Add(original);
         await dbContext.SaveChangesAsync();
 
-        var options = CreateOptions(new Uri("https://localhost:7214/"));
+        var options = CreateOptions(new Uri(ApiRoutes.HttpsBaseUrl));
         var repository = new TodoRepository(options, dbContext);
 
         original.Title = "Updated";
@@ -133,7 +134,7 @@ public sealed class TodoDbContextTests
     public async Task DeleteByIdAsync_WhenNullTodo_ReturnsFalseAndDoesNotChangeDb()
     {
         var dbContext = CreateDbContext();
-        var options = CreateOptions(new Uri("https://localhost:7214/"));
+        var options = CreateOptions(new Uri(ApiRoutes.HttpsBaseUrl));
         var repository = new TodoRepository(options, dbContext);
 
         var sut = await repository.DeleteByIdAsync(null, CancellationToken.None);
@@ -145,12 +146,12 @@ public sealed class TodoDbContextTests
     public async Task DeleteByIdAsync_WhenExistingTodo_RemovesAndReturnsTrue()
     {
         var dbContext = CreateDbContext();
-        var todo = new Todo(1, "To delete", new Uri("https://localhost:7214/todos/1"), 1);
+        var todo = new Todo(1, "To delete", new Uri(ApiRoutes.HttpsBaseUrl + "/todos/1"), 1);
 
         dbContext.Todos.Add(todo);
         await dbContext.SaveChangesAsync();
 
-        var options = CreateOptions(new Uri("https://localhost:7214/"));
+        var options = CreateOptions(new Uri(ApiRoutes.HttpsBaseUrl));
         var repository = new TodoRepository(options, dbContext);
 
         var sut = await repository.DeleteByIdAsync(todo, CancellationToken.None);
@@ -164,12 +165,12 @@ public sealed class TodoDbContextTests
         var dbContext = CreateDbContext();
 
         dbContext.Todos.AddRange(
-            new Todo(1, "A", new Uri("https://localhost:7214/todos/1"), 1),
-            new Todo(2, "B", new Uri("https://localhost:7214/todos/2"), 2)
+            new Todo(1, "A", new Uri(ApiRoutes.HttpsBaseUrl + "/todos/1"), 1),
+            new Todo(2, "B", new Uri(ApiRoutes.HttpsBaseUrl + "/todos/2"), 2)
         );
         await dbContext.SaveChangesAsync();
 
-        var options = CreateOptions(new Uri("https://localhost:7214/"));
+        var options = CreateOptions(new Uri(ApiRoutes.HttpsBaseUrl));
         var repository = new TodoRepository(options, dbContext);
 
         await repository.DeleteAllAsync(CancellationToken.None);

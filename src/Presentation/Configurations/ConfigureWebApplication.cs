@@ -6,7 +6,7 @@ namespace Presentation.Configurations;
 
 public static class ConfigureWebApplication
 {
-    public static async Task AddWebApplicationConfiguration(this WebApplication application)
+    public static void AddWebApplicationConfiguration(this WebApplication application)
     {
         application.UseRouting();
         application.UseExceptionHandler();

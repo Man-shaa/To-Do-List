@@ -4,6 +4,7 @@ using Application.Todos.DTOs;
 using Domain.Entities;
 using NSubstitute;
 using Moq;
+using Presentation.Common.Constants;
 
 namespace Application.Tests.Todos.Commands.CreateTodo;
 
@@ -24,7 +25,7 @@ public sealed class CreateTodoHandlerTests
             .Returns(new Todo(
                 1,
                 todoCreateDto.Title,
-                new Uri("https://localhost:7214/todos/1"),
+                new Uri(ApiRoutes.HttpsBaseUrl + "/todos/1"),
                 todoCreateDto.Order ?? 1));
 
         var createTodoCommand = new CreateTodoCommand(todoCreateDto);
@@ -39,7 +40,7 @@ public sealed class CreateTodoHandlerTests
     public async Task Handle_should_return_created_result_with_created_todo()
     {
         var dto = new TodoCreateDto { Title = "Test Title", Order = 3 };
-        var createdTodo = new Todo(12, dto.Title, new Uri("https://localhost:7214/todos/12"), dto.Order ?? 3);
+        var createdTodo = new Todo(12, dto.Title, new Uri(ApiRoutes.HttpsBaseUrl + "/todos/12"), dto.Order ?? 3);
         var todoDbContext = new Mock<ITodoRepository>();
 
         todoDbContext.Setup(s => s.CreateAsync(dto, It.IsAny<CancellationToken>()))

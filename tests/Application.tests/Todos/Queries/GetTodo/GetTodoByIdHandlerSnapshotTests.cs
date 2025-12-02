@@ -3,6 +3,7 @@ using Application.Todos.Queries.GetTodo;
 using Domain.Entities;
 using Moq;
 using NSubstitute;
+using Presentation.Common.Constants;
 
 namespace Application.Tests.Todos.Queries.GetTodo;
 
@@ -18,7 +19,7 @@ public sealed class GetTodoByIdQueryTests
             .Returns(new Todo(
                 id: 1,
                 title: "Snapshot Title 1",
-                url: new Uri("https://localhost:7214/todos/1"),
+                url: new Uri(ApiRoutes.HttpsBaseUrl + "/todos/1"),
                 order: 1));
 
         var getTodoByIdHandler = new GetTodoByIdHandler(todoDbContext);

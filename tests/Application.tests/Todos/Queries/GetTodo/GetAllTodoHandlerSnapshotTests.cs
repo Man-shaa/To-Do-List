@@ -3,6 +3,7 @@ using Application.Todos.Queries.GetTodo;
 using Domain.Entities;
 using Moq;
 using NSubstitute;
+using Presentation.Common.Constants;
 
 namespace Application.Tests.Todos.Queries.GetTodo;
 
@@ -17,8 +18,8 @@ public sealed class GetAllTodoQueryTests
         
         todoDbContext.GetAllAsync(Arg.Any<CancellationToken>())
             .Returns([
-                new Todo(1, "Snapshot Title 1", new Uri("https://localhost:7214/todos/1"), 1),
-                new Todo(2, "Snapshot Title 2", new Uri("https://localhost:7214/todos/2"), 2)
+                new Todo(1, "Snapshot Title 1", new Uri(ApiRoutes.HttpsBaseUrl + "/todos/1"), 1),
+                new Todo(2, "Snapshot Title 2", new Uri(ApiRoutes.HttpsBaseUrl + "/todos/2"), 2)
             ]);
 
         var sut = getAllTodoHandler.Handle(getAllTodoQuery, CancellationToken.None); 

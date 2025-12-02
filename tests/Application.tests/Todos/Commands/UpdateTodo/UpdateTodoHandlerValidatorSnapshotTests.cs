@@ -3,6 +3,7 @@ using Domain.Entities;
 using FluentValidation.TestHelper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
+using Presentation.Common.Constants;
 
 namespace Application.Tests.Todos.Commands.UpdateTodo;
 
@@ -12,7 +13,7 @@ public sealed class UpdateTodoHandlerValidatorTests
     [Fact]
     public Task Invalid_patchDocument_produces_expected_validation_errors()
     {
-        var todo = new Todo(1, "Title", new Uri("https://localhost:7214/todos/1"), 1);
+        var todo = new Todo(1, "Title", new Uri(ApiRoutes.HttpsBaseUrl + "/todos/1"), 1);
 
         var patch = new JsonPatchDocument<Todo>();
         patch.Operations.Add(new Operation<Todo>("add", "/title", from: null, value: "X"));

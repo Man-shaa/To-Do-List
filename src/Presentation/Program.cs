@@ -14,7 +14,7 @@ builder.AddPresentation()
 
 var app = builder.Build();
 
-await app.AddWebApplicationConfiguration();
+app.AddWebApplicationConfiguration();
 
 using (var scope = app.Services.CreateScope())
 {
