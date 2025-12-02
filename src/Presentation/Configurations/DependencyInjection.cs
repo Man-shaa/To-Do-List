@@ -8,7 +8,7 @@ namespace Presentation.Configurations;
 
 public static class DependencyInjection
 {
-    public static IHostApplicationBuilder AddPresentation(this IHostApplicationBuilder builder)
+    public static WebApplicationBuilder AddPresentation(this WebApplicationBuilder builder)
     {
         builder.Services.AddControllers(options =>
             {

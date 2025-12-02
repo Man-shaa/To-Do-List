@@ -11,7 +11,6 @@ public static class ConfigureWebApplication
         application.UseRouting();
         application.UseExceptionHandler();
         application.UseApplicationExceptionHandling();
-        application.UseStatusCodePages();
         application.MapTodoEndpoints();
         application.MapDefaultEndpoints();
         application.MapOpenApi();

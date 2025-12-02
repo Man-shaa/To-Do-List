@@ -42,7 +42,7 @@ Content-Type: application/json
 ]
 
 ### Delete todo by ID
-DELETE https://localhost:7214/api/v1/todos/3
+DELETE https://localhost:7214/api/v1/todos/33
 
 ### Delete all Todos
 DELETE https://localhost:7214/api/v1/todos/

@@ -1,6 +1,7 @@
 using Application.Todos;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Configurations;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,7 +11,7 @@ namespace Infrastructure.Configurations;
 
 public static class DependencyInjection
 {
-    public static IHostApplicationBuilder AddInfrastructure(this IHostApplicationBuilder builder)
+    public static WebApplicationBuilder AddInfrastructure(this WebApplicationBuilder builder)
     {
         AddTodoDbContext(builder);
         
@@ -24,7 +25,7 @@ public static class DependencyInjection
         return builder;
     }
 
-    private static void AddTodoDbContext(this IHostApplicationBuilder builder)
+    private static void AddTodoDbContext(this WebApplicationBuilder builder)
     {
         builder.AddNpgsqlDbContext<Persistence.TodoDbContext>(AspireConfiguration.AspireResourcesName.TodoDatabase,
             null,
