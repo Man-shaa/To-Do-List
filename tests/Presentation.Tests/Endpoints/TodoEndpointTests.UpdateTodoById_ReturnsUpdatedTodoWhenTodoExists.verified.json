@@ -1,5 +1,5 @@
 ﻿{
-  "StatusCode": "OK",
+  "StatusCode": "OK 200",
   "Content": {
     "FromApi": {
       "Id": 666,

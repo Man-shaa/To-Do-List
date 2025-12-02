@@ -36,12 +36,11 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
         var apiResponse = await sut.Content.ReadFromJsonAsync<Todo>();
 
         await using var dbContext = fixture.CreateScopeDbContext();
-        var persisted = await dbContext.Todos.SingleAsync(t => t.Id == apiResponse!.Id);
+        var persisted = await dbContext.Todos.FindAsync(apiResponse!.Id);
 
         await Verify(new
         {
-            sut.StatusCode,
-            FromApi = apiResponse,
+            sut,
             FromDb = persisted
         });
     }
@@ -64,12 +63,8 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
 
         await Verify(new
         {
-            sut.StatusCode,
-            Content = new
-            {
-                FromApi = apiResponse,
-                FromDb = persisted
-            }
+            sut,
+            FromDb = persisted
         });
     }
     
@@ -87,16 +82,8 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
         var persisted = await dbContext.Todos
             .OrderBy(t => t.Id)
             .ToListAsync();
-        
-        await Verify(new 
-        {
-            sut.StatusCode,
-            Content = new
-            {
-                FromApi = fromApi,
-                FromDb = persisted
-            }
-        });
+
+        await Verify(sut);
     }
     
     [Fact]
@@ -106,38 +93,22 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
         await fixture.SeedInitialTodosAsync();
     
         var sut = await fixture.Client.GetAsync($"/todos/666");
-        var apiResponse = sut.Content.ReadFromJsonAsync<Todo>();
     
         await using var dbContext = fixture.CreateScopeDbContext();
-        var persisted = await dbContext.Todos.SingleOrDefaultAsync(t => t.Id == 666);
 
-        await Verify(new 
-        {
-            sut.StatusCode,
-            Content = new
-            {
-                FromApi = apiResponse,
-                FromDb = persisted
-            }
-        });
+        await Verify(sut);
     }
-    
+
     [Fact]
     public async Task GetTodoById_ReturnsNotFoundWhenTodoDoesNotExist()
     {
         await fixture.ResetDatabaseAsync();
 
         var sut = await fixture.Client.GetAsync("/todos/9999");
-        var apiResponse = sut.Content.ReadFromJsonAsync<ValidationProblemDetails>();
-    
+
         await using var dbContext = fixture.CreateScopeDbContext();
-        var persisted = await dbContext.Todos.AnyAsync(t => t.Id == 9999);
-        
-        await Verify(new
-        {
-            sut,
-            IsTodoInDb = persisted
-        });
+
+        await Verify(sut);
     }
 
     [Fact]
@@ -160,7 +131,7 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
         var apiResponse = await sut.Content.ReadFromJsonAsync<Todo>();
 
         await using var dbContext = fixture.CreateScopeDbContext();
-        var persisted = await dbContext.Todos.SingleAsync(t => t.Id == initialTodoContent.Id);
+        var persisted = await dbContext.Todos.FindAsync(initialTodoContent.Id);
 
         await Verify(new 
         {

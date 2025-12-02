@@ -1,53 +1,31 @@
 ﻿{
-  "StatusCode": "OK",
+  "Status": "200 OK",
   "Content": {
-    "FromApi": {
-      "Status": "RanToCompletion",
-      "Result": [
-        {
-          "Id": 666,
-          "Title": "Todo 666",
-          "Url": "https://localhost:7214/todos/666",
-          "IsCompleted": false,
-          "Order": 666
-        },
-        {
-          "Id": 667,
-          "Title": "Todo 667",
-          "Url": "https://localhost:7214/todos/667",
-          "IsCompleted": false,
-          "Order": 667
-        },
-        {
-          "Id": 668,
-          "Title": "Todo 668",
-          "Url": "https://localhost:7214/todos/668",
-          "IsCompleted": false,
-          "Order": 668
-        }
-      ]
+    "Headers": {
+      "Content-Length": "310",
+      "Content-Type": "application/json; charset=utf-8"
     },
-    "FromDb": [
+    "Value": [
       {
-        "Id": 666,
-        "Title": "Todo 666",
-        "Url": "https://localhost:7214/todos/666",
-        "IsCompleted": false,
-        "Order": 666
+        "id": 666,
+        "title": "Todo 666",
+        "url": "https://localhost:7214/todos/666",
+        "isCompleted": false,
+        "order": 666
       },
       {
-        "Id": 667,
-        "Title": "Todo 667",
-        "Url": "https://localhost:7214/todos/667",
-        "IsCompleted": false,
-        "Order": 667
+        "id": 667,
+        "title": "Todo 667",
+        "url": "https://localhost:7214/todos/667",
+        "isCompleted": false,
+        "order": 667
       },
       {
-        "Id": 668,
-        "Title": "Todo 668",
-        "Url": "https://localhost:7214/todos/668",
-        "IsCompleted": false,
-        "Order": 668
+        "id": 668,
+        "title": "Todo 668",
+        "url": "https://localhost:7214/todos/668",
+        "isCompleted": false,
+        "order": 668
       }
     ]
   }

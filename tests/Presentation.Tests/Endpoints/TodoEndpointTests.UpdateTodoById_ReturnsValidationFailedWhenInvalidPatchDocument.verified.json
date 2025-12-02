@@ -1,5 +1,5 @@
 ﻿{
-  "StatusCode": "BadRequest",
+  "StatusCode": "BadRequest 400",
   "Validation": {
     "Errors": {
       "PatchDocument": [

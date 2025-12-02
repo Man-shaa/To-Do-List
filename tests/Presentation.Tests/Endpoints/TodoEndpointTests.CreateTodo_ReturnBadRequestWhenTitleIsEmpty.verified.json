@@ -1,16 +1,19 @@
 ﻿{
-  "StatusCode": "BadRequest",
-  "Content": {
-    "FromApi": {
-      "Status": "RanToCompletion",
-      "Result": {
-        "Errors": {
+  "sut": {
+    "Status": "400 Bad Request",
+    "Content": {
+      "Headers": {
+        "Content-Length": "94",
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "Value": {
+        "title": "Validation failed",
+        "status": 400,
+        "errors": {
           "Todo.Title": [
             "Title must not be empty"
           ]
-        },
-        "Title": "Validation failed",
-        "Status": 400
+        }
       }
     }
   }

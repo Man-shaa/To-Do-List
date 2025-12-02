@@ -1,22 +1,16 @@
 ﻿{
-  "StatusCode": "OK",
+  "Status": "200 OK",
   "Content": {
-    "FromApi": {
-      "Status": "RanToCompletion",
-      "Result": {
-        "Id": 666,
-        "Title": "Todo 666",
-        "Url": "https://localhost:7214/todos/666",
-        "IsCompleted": false,
-        "Order": 666
-      }
+    "Headers": {
+      "Content-Length": "102",
+      "Content-Type": "application/json; charset=utf-8"
     },
-    "FromDb": {
-      "Id": 666,
-      "Title": "Todo 666",
-      "Url": "https://localhost:7214/todos/666",
-      "IsCompleted": false,
-      "Order": 666
+    "Value": {
+      "id": 666,
+      "title": "Todo 666",
+      "url": "https://localhost:7214/todos/666",
+      "isCompleted": false,
+      "order": 666
     }
   }
 }

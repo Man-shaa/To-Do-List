@@ -1,11 +1,22 @@
 ﻿{
-  "StatusCode": "Created",
-  "FromApi": {
-    "Id": 1,
-    "Title": "Test Todo",
-    "Url": "https://localhost:7214/todos/1",
-    "IsCompleted": false,
-    "Order": 1
+  "sut": {
+    "Status": "201 Created",
+    "Headers": {
+      "Location": "https://localhost:7214/todos/1"
+    },
+    "Content": {
+      "Headers": {
+        "Content-Length": "97",
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "Value": {
+        "id": 1,
+        "title": "Test Todo",
+        "url": "https://localhost:7214/todos/1",
+        "isCompleted": false,
+        "order": 1
+      }
+    }
   },
   "FromDb": {
     "Id": 1,
