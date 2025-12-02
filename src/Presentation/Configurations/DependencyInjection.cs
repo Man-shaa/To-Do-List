@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Newtonsoft.Json.Serialization;
 using Presentation.ExceptionHandlers;
 
-namespace Presentation;
+namespace Presentation.Configurations;
 
 public static class DependencyInjection
 {

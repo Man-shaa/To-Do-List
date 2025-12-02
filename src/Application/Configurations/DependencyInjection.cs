@@ -6,7 +6,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Application;
+namespace Application.Configurations;
 
 public static  class DependencyInjection
 {

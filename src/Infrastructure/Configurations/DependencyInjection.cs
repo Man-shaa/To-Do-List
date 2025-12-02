@@ -3,10 +3,10 @@ using Infrastructure.Repositories;
 using Infrastructure.Repositories.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
-namespace Infrastructure;
+namespace Infrastructure.Configurations;
 
 public static class DependencyInjection
 {

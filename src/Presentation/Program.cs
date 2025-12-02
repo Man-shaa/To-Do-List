@@ -1,8 +1,7 @@
-using Application;
-using Infrastructure;
+using Application.Configurations;
+using Infrastructure.Configurations;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using Presentation;
 using Presentation.Configurations;
 using ServiceDefaults;
 
