@@ -21,9 +21,9 @@ public static class DependencyInjection
 
         builder.Services.AddOpenApi();
         builder.Services.AddVersioning();
+        builder.Services.AddDaprClient();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
-
         builder.Services.AddProblemDetails();
         builder.Services.AddSingleton<IExceptionHandler, ValidationExceptionHandler>();  
         return builder;

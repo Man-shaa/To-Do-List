@@ -10,6 +10,10 @@ var postgres = builder.AddPostgres(AspireResourcesName.Postgres)
     .AddDatabase(AspireResourcesName.TodoDatabase);
 
 builder.AddProject<Presentation>(AspireResourcesName.Presentation)
+    .WithDaprSidecar(new DaprSidecarOptions()
+    {
+        AppId = "presentation"
+    })
     .WithEnvironment("SwaggerEnabled", "true")
     .WithReference(postgres)
     .WaitFor(postgres);
