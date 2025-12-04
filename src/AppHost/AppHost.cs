@@ -1,21 +1,16 @@
-using AspireConfiguration;
-using CommunityToolkit.Aspire.Hosting.Dapr;
-using Projects;
+using AppHost.Configurations;
 
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
 
-var postgres = builder.AddPostgres(AspireResourcesName.Postgres)
-    .WithPgWeb()
-    .WithDataVolume()
-    .AddDatabase(AspireResourcesName.TodoDatabase);
+var postgres = builder.AddPostgres();
+var kafka = builder.AddKafka();
 
-builder.AddProject<Presentation>(AspireResourcesName.TodoApi)
-    .WithDaprSidecar(new DaprSidecarOptions()
-    {
-        AppId = "presentation"
-    })
-    .WithEnvironment("SwaggerEnabled", "true")
-    .WithReference(postgres)
-    .WaitFor(postgres);
+builder.AddTodoProject(postgres);
 
-await builder.Build().RunAsync();
+builder.AddKafkaConsumerResources(postgres, kafka); // ?
+
+builder.AddECommerceEnrichers(kafka); // ?
+
+await builder
+    .Build()
+    .RunAsync();

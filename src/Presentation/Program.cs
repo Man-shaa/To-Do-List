@@ -3,7 +3,6 @@ using Infrastructure.Configurations;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Presentation.Configurations;
-using ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
 

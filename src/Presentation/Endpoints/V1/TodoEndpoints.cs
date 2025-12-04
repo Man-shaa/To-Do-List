@@ -9,7 +9,6 @@ using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Newtonsoft.Json;
 using Presentation.Common.Constants;
-using ServiceDefaults;
 
 namespace Presentation.Endpoints.V1;
 
