@@ -2,14 +2,14 @@ using AspireConfiguration;
 using CommunityToolkit.Aspire.Hosting.Dapr;
 using Projects;
 
-var builder = DistributedApplication.CreateBuilder(args);
+IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
 
 var postgres = builder.AddPostgres(AspireResourcesName.Postgres)
     .WithPgWeb()
     .WithDataVolume()
     .AddDatabase(AspireResourcesName.TodoDatabase);
 
-builder.AddProject<Presentation>(AspireResourcesName.Presentation)
+builder.AddProject<Presentation>(AspireResourcesName.TodoApi)
     .WithDaprSidecar(new DaprSidecarOptions()
     {
         AppId = "presentation"

@@ -26,8 +26,6 @@ public static class TodoEndpoints
         
         app.MapGet("/", () => "Hello World");
 
-        app.MapDefaultEndpoints();
-        
         group.MapGet(ApiRoutes.Todos.GetAll, GetAllTodoV1)
             .Produces(StatusCodes.Status200OK)
             .WithName(nameof(GetAllTodoV1))
