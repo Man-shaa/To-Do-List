@@ -8,7 +8,7 @@ namespace Presentation.Configurations;
 
 public static class DependencyInjection
 {
-    public static WebApplicationBuilder AddPresentation(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder AddPresentationServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddControllers(options =>
             {
@@ -25,7 +25,10 @@ public static class DependencyInjection
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddProblemDetails();
-        builder.Services.AddSingleton<IExceptionHandler, ValidationExceptionHandler>();  
+        builder.Services.AddSingleton<IExceptionHandler, ValidationExceptionHandler>();
+        builder.Services.AddOptionsWithValidateOnStart<DaprConfiguration>()
+            .BindConfiguration(DaprConfiguration.SectionName)
+            .ValidateDataAnnotations();
         return builder;
     }
 

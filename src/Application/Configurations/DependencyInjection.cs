@@ -10,7 +10,7 @@ namespace Application.Configurations;
 
 public static  class DependencyInjection
 {
-    public static WebApplicationBuilder AddApplication(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder AddApplicationServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly, includeInternalTypes: true);
         builder.Services.AddFluentValidationClientsideAdapters();

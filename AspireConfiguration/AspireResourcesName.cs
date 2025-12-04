@@ -9,4 +9,13 @@ public static class AspireResourcesName
     public const string Postgres = "postgres";
     
     public const string Kafka = "kafka";
+
+    public const string KafkaUiContainerName = "kafka-ui";
+
+    public static class Dapr
+    {
+        public const string TodoConsumers = $"{Todo}-consumers";
+        public const string KafkaPubSubName = "pubsub";
+        public const string KafkaPath = "./dapr/kafka-pubsub";
+    }
 }

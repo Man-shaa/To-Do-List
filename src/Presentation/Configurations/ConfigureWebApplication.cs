@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Options;
+using Presentation.Endpoints.TodoConsumers;
 using Presentation.Endpoints.V1;
 using Presentation.ExceptionHandlers;
 using ServiceDefaults;
@@ -8,11 +10,15 @@ public static class ConfigureWebApplication
 {
     public static void AddWebApplicationConfiguration(this WebApplication application)
     {
+        var daprConfiguration = application.Services
+            .GetRequiredService<IOptions<DaprConfiguration>>().Value;
+
         application.UseRouting();
         application.UseExceptionHandler();
         application.UseApplicationExceptionHandling();
         application.MapTodoEndpoints();
         application.MapDefaultEndpoints();
+        application.MapTodoConsumersEndpoints(daprConfiguration);
         application.MapOpenApi();
         application.AddSwagger();
     }

@@ -6,9 +6,9 @@ using Presentation.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddPresentation()
-    .AddInfrastructure()
-    .AddApplication();
+builder.AddPresentationServices()
+    .AddInfrastructureServices()
+    .AddApplicationServices();
 
 var app = builder
     .AddAspireClientConfiguration()
