@@ -21,17 +21,21 @@ public static class DistributedApplicationBuilderExtensions
 
     public static IResourceBuilder<KafkaServerResource> AddKafka(this IDistributedApplicationBuilder builder)
     {
+        
         builder.Services.AddOptions<KafkaSettings>()
             .BindConfiguration(KafkaSettings.SectionName)
             .ValidateDataAnnotations()
             .ValidateOnStart();
         
-        var kafkaSettings = builder.Configuration.GetRequiredSection(KafkaSettings.SectionName).Get<KafkaSettings>()!;
         
+        var kafkaSettings = builder.Configuration
+            .GetRequiredSection(KafkaSettings.SectionName).Get<KafkaSettings>()!;
+        
+        Console.WriteLine($"KafkaBrokerPort from config: {kafkaSettings.KafkaBrokerPort}");
+
         var kafka = builder
-            .AddKafka(AspireResourcesName.Kafka, kafkaSettings.KafkaBrokerPort)
-            .WithKafkaUI(configureContainer =>
-                configureContainer.WithHostPort(9200), AspireResourcesName.KafkaUiContainerName);
+            .AddKafka(AspireResourcesName.Kafka)
+            .WithKafkaUI();
         
         return kafka;
     }
