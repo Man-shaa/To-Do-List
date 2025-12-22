@@ -4,8 +4,7 @@ using Microsoft.AspNetCore.JsonPatch;
 
 namespace Application.Todos.Commands.UpdateTodo;
 
-public record UpdateTodoCommand(Todo Todo, JsonPatchDocument<Todo> PatchDocument) : IRequest<Todo>;
-
+public sealed record UpdateTodoCommand(Todo Todo, JsonPatchDocument<Todo> PatchDocument) : IRequest<Todo>;
 
 public sealed class UpdateTodoHandler(ITodoRepository todoDbContext) : IRequestHandler<UpdateTodoCommand, Todo>
 {

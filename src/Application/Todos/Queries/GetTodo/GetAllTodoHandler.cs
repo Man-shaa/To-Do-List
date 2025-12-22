@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Application.Todos.Queries.GetTodo;
 
-public record GetAllTodoQuery : IRequest<List<Todo>>;
+public sealed record GetAllTodoQuery : IRequest<List<Todo>>;
 
 public sealed class GetAllTodoHandler(ITodoRepository todoDbContext)
     : IRequestHandler<GetAllTodoQuery, List<Todo>>

@@ -26,9 +26,6 @@ public static class DependencyInjection
         builder.Services.AddSwaggerGen();
         builder.Services.AddProblemDetails();
         builder.Services.AddSingleton<IExceptionHandler, ValidationExceptionHandler>();
-        builder.Services.AddOptionsWithValidateOnStart<DaprConfiguration>()
-            .BindConfiguration(DaprConfiguration.SectionName)
-            .ValidateDataAnnotations();
         return builder;
     }
 

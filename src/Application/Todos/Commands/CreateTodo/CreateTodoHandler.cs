@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.Todos.Commands.CreateTodo;
 
-public record CreateTodoCommand(TodoCreateDto Todo) : IRequest<Todo>;
+public sealed record CreateTodoCommand(TodoCreateDto Todo) : IRequest<Todo>;
 
 public sealed class CreateTodoHandler(ITodoRepository todoDbContext) : IRequestHandler<CreateTodoCommand, Todo>
 {

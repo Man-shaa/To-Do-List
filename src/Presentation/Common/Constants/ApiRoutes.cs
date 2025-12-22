@@ -15,9 +15,4 @@ public static class ApiRoutes
         public const string DeleteAll = "todos";
         public const string DeleteById = "todos/{todoId}";
     }
-
-    public static class Consumers
-    {
-        public const string Todo = $"{RootWithoutVersioning}/todo_consumer";
-    }
 }

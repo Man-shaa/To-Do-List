@@ -2,7 +2,7 @@ using MediatR;
 
 namespace Application.Todos.Commands.DeleteTodo;
 
-public record DeleteTodoCommand(int Id) : IRequest<bool>;
+public sealed record DeleteTodoCommand(int Id) : IRequest<bool>;
 
 public sealed class DeleteTodoByIdHandler(ITodoRepository todoDbContext) : IRequestHandler<DeleteTodoCommand, bool>
 {
