@@ -2,6 +2,7 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Newtonsoft.Json.Serialization;
+using Presentation.Endpoints.RabbitMq;
 using Presentation.ExceptionHandlers;
 
 namespace Presentation.Configurations;
@@ -21,6 +22,7 @@ public static class DependencyInjection
 
         builder.Services.AddOpenApi();
         builder.Services.AddVersioning();
+        builder.Services.AddMessaging(builder.Configuration);
         builder.Services.AddDaprClient();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -42,5 +44,15 @@ public static class DependencyInjection
             options.GroupNameFormat = "'v'VVV";
             options.SubstituteApiVersionInUrl = true;
         });
+    }
+
+    private static IServiceCollection AddMessaging(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddOptions<RabbitMqOptions>()
+            .Bind(configuration.GetSection(RabbitMqOptions.ConfigurationSectionName));
+
+        services.AddSingleton<ITodoCreatePublisher, TodoCreatePublisher>();
+        services.AddHostedService<TodoCreateConsumerHostedService>();
+        return services;
     }
 }

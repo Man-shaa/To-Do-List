@@ -4,21 +4,21 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Presentation.Configurations;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.AddPresentationServices()
     .AddInfrastructureServices()
-    .AddApplicationServices();
+    .AddApplicationServices()
+    .AddAspireClientConfiguration();
 
-var app = builder
-    .AddAspireClientConfiguration()
+WebApplication app = builder
     .Build();
 
 app.AddWebApplicationConfiguration();
 
-using (var scope = app.Services.CreateScope())
+using (IServiceScope scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
+    TodoDbContext db = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
     await db.Database.MigrateAsync();
 }
 
