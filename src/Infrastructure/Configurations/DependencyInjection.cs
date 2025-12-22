@@ -17,7 +17,6 @@ public static class DependencyInjection
         
         builder.Services.AddOptions<SettingsOptions>()
             .BindConfiguration(SettingsOptions.ConfigurationSectionName)
-            .ValidateDataAnnotations()
             .ValidateOnStart();
 
         builder.Services.AddSingleton<IValidateOptions<SettingsOptions>, ValidateSettingsOptions>();

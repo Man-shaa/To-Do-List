@@ -1,19 +1,21 @@
 using Application.Todos;
 using Application.Todos.DTOs;
 using Domain.Entities;
+using Infrastructure.Persistence;
 using Infrastructure.Repositories.Configurations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Repositories;
 
-public sealed class TodoRepository(IOptions<SettingsOptions> options, Persistence.TodoDbContext dbContext) : ITodoRepository
+public sealed class TodoRepository(IOptions<SettingsOptions> options, TodoDbContext dbContext) : ITodoRepository
 {
-    private readonly Uri	    _baseUrl = options.Value.BaseUrl;
+    private readonly Uri? _baseUrl = options.Value.BaseUrl;
 
     public async Task<List<Todo>> GetAllAsync(CancellationToken ct)
     {
-        return await dbContext.Todos.AsNoTracking().ToListAsync(cancellationToken: ct);
+        return await dbContext.Todos.AsNoTracking().ToListAsync(ct);
     }
 
     public async Task<Todo?> GetByIdAsync(int id, CancellationToken ct)
@@ -23,11 +25,11 @@ public sealed class TodoRepository(IOptions<SettingsOptions> options, Persistenc
 
     public async Task<Todo> CreateAsync(TodoCreateDto dto, CancellationToken ct)
     {
-        var todo = new Todo(
-            id: 0,
-            title: dto.Title ?? "default title",
-            url: new Uri($"{_baseUrl}todos/0"),
-            order: dto.Order ?? 2
+        Todo todo = new(
+            0,
+            dto.Title ?? "default title",
+            new Uri($"{_baseUrl}todos/0"),
+            dto.Order ?? 2
         );
 
 
@@ -39,24 +41,23 @@ public sealed class TodoRepository(IOptions<SettingsOptions> options, Persistenc
 
         dbContext.Todos.Update(todo);
         await dbContext.SaveChangesAsync(ct);
-        
+
         return await Task.FromResult(todo);
     }
-    
+
     public async Task<Todo> UpdateAsync(Todo todo, CancellationToken ct = default)
     {
-        var updatedTodo = dbContext.Todos.Update(todo);
+        EntityEntry<Todo> updatedTodo = dbContext.Todos.Update(todo);
         await dbContext.SaveChangesAsync(ct);
         return Task.FromResult(updatedTodo.Entity).Result;
     }
-    
+
     public async Task<bool> DeleteByIdAsync(Todo? todo, CancellationToken ct)
     {
-        if (todo is null)
-            return false;
-                
+        if (todo is null) { return false; }
+
         dbContext.Todos.Remove(todo);
-        var response = await dbContext.SaveChangesAsync(ct);
+        int response = await dbContext.SaveChangesAsync(ct);
         return response != 0;
     }
 
