@@ -91,7 +91,7 @@ public sealed class TodoEndpointTests(TodoApiFixture fixture)
         var sut = await fixture.Client.GetAsync(url);
     
         await using var dbContext = fixture.CreateScopeDbContext();
-
+        
         await Verify(sut);
     }
 

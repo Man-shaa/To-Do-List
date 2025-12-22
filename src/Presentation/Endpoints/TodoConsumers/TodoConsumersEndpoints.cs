@@ -9,7 +9,7 @@ namespace Presentation.Endpoints.TodoConsumers;
 
 public static class TodoConsumersEndpoints
 {
-    public static Task MapTodoConsumersEndpoints(this IEndpointRouteBuilder app,
+    public static void MapTodoConsumersEndpoints(this IEndpointRouteBuilder app,
         DaprConfiguration daprConfiguration)
     {
         app.MapPost(ApiRoutes.Consumers.Todo, HandleCreateTodo)
@@ -19,13 +19,12 @@ public static class TodoConsumersEndpoints
                 Name = daprConfiguration.PubSub.Topics.CreateTodoTopic
             })
             .ExcludeFromDescription();
-
-        return Task.CompletedTask;
     }
 
     private static async Task<IResult> HandleCreateTodo(TodoCreateDto dto, ISender sender)
     {
         var createdTodo = await sender.Send(new CreateTodoCommand(dto));
+
         return Results.Created(createdTodo.Url, createdTodo);
     }
 }

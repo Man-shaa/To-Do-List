@@ -17,7 +17,7 @@ public static class DependencyInjection
             .AddNewtonsoftJson(opts =>
             {
                 opts.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-            });
+            }); //remove newtonsoft json
 
         builder.Services.AddOpenApi();
         builder.Services.AddVersioning();

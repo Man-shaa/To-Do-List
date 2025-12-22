@@ -14,8 +14,8 @@ public static class AspireResourcesName
 
     public static class Dapr
     {
-        public const string TodoConsumers = $"{Todo}-consumers";
-        public const string KafkaPubSubName = "pubsub";
-        public const string KafkaPath = "./dapr/kafka-pubsub";
+        public const string TodoConsumers = $"{Todo}.consumers";
+        public const string KafkaPubSubName = "kafka-pubsub";
+        public const string KafkaPubSubCreateTodoDirPath = "./dapr";
     }
 }

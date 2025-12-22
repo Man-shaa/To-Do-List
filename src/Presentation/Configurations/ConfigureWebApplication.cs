@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using Presentation.Endpoints.TodoConsumers;
+using Presentation.Endpoints.TodoPublisher;
 using Presentation.Endpoints.V1;
 using Presentation.ExceptionHandlers;
 using ServiceDefaults;
@@ -19,8 +20,10 @@ public static class ConfigureWebApplication
         application.MapTodoEndpoints();
         application.MapDefaultEndpoints();
         application.MapTodoConsumersEndpoints(daprConfiguration);
+        application.MapTodoPublishEndpoints(daprConfiguration);
         application.MapOpenApi();
         application.AddSwagger();
+        application.MapSubscribeHandler();
     }
 
     private static void AddSwagger(this WebApplication application)

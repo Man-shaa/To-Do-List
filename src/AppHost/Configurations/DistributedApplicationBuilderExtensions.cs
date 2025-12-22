@@ -9,8 +9,6 @@ namespace AppHost.Configurations;
 
 public static class DistributedApplicationBuilderExtensions
 {
-    private const int STargetPort = 5002;
-
     public static IResourceBuilder<PostgresDatabaseResource> AddPostgres(this IDistributedApplicationBuilder builder)
     {
         return builder.AddPostgres(AspireResourcesName.Postgres)
@@ -31,38 +29,38 @@ public static class DistributedApplicationBuilderExtensions
         var kafkaSettings = builder.Configuration
             .GetRequiredSection(KafkaSettings.SectionName).Get<KafkaSettings>()!;
         
-        Console.WriteLine($"KafkaBrokerPort from config: {kafkaSettings.KafkaBrokerPort}");
-
         var kafka = builder
-            .AddKafka(AspireResourcesName.Kafka)
-            .WithKafkaUI();
-        
+            .AddKafka(AspireResourcesName.Kafka, kafkaSettings.KafkaBrokerPort)
+            .WithKafkaUI(configureContainer =>
+                    configureContainer.WithHostPort(9200),
+                AspireResourcesName.KafkaUiContainerName);
+
         return kafka;
     }
 
     public static void AddTodoProject(this IDistributedApplicationBuilder builder,
         IResourceBuilder<PostgresDatabaseResource> postgres,
-        IResourceBuilder<KafkaServerResource> kafka,
-        string appId)
+        IResourceBuilder<KafkaServerResource> kafka)
     {
-        var pubsup = builder
-            .AddDaprPubSub(AspireResourcesName.Dapr.KafkaPubSubName,
+        var pubsub = builder
+            .AddDaprPubSub("toto",
                 new DaprComponentOptions
                 {
-                    LocalPath = AspireResourcesName.Dapr.KafkaPath
-                })
-            .WaitFor(kafka);
+                    LocalPath = "./dapr/"
+                });
 
         builder.AddProject<Presentation>(AspireResourcesName.TodoApi)
+            .WithUrl("http://localhost:5000/swagger")
             .WithDaprSidecar(
                 new DaprSidecarOptions
                 {
-                    AppId = appId,
-                    AppPort = STargetPort
+                    AppId = AspireResourcesName.TodoApi,
+                    AppPort = 5000
                 })
-            .WithEnvironment("SwaggerEnabled", "true")
             .WithReference(postgres)
+            .WithReference(kafka)
+            // .WithReference(pubsub)
             .WaitFor(postgres)
-            .WithReference(pubsup);
+            .WaitFor(kafka);
     }
 }

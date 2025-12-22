@@ -12,17 +12,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting" Version="13.0.2" />
-    <PackageReference Include="Aspire.Hosting.AppHost" Version="13.0.1" />
-    <PackageReference Include="Aspire.Hosting.Kafka" Version="13.0.2" />
-    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.0.1" />
-    <PackageReference Include="CommunityToolkit.Aspire.Hosting.Dapr" Version="13.0.0" />
+    <PackageReference Include="Aspire.Hosting" Version="9.5.2" />
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="9.5.2" />
+    <PackageReference Include="Aspire.Hosting.Kafka" Version="9.5.2" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.5.2" />
+    <PackageReference Include="CommunityToolkit.Aspire.Hosting.Dapr" Version="9.9.0" />
+    <PackageReference Include="Dapr.AspNetCore" Version="1.16.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\AspireConfiguration\AspireConfiguration.csproj" isAspireProjectResource="false"/>
     <ProjectReference Include="..\Presentation\Presentation.csproj" />
+  </ItemGroup>
 
+  <ItemGroup>
+    <None Update="dapr\kafka-pubsub-createtodo.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
