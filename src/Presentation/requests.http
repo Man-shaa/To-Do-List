@@ -15,7 +15,6 @@ POST http://localhost:5000/api/v1/todos
 Content-Type: application/json
 
 {
-  "title": "Title",
   "order": 2
 }
 
